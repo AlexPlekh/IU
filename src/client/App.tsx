@@ -1,16 +1,16 @@
 import React from "react";
-import Main from "./pages/Main";
+import Main from "./pages/Main/Main";
 import { ContextWrapper } from "./Context";
 import { Route, Routes, Navigate } from "react-router-dom";
-import { Landing } from "./pages/Landing";
-import { RegStep1 } from "./components/RegStep1";
-import { RegStep2 } from "./components/RegStep2";
+import { Landing } from "./pages/Landing/Landing";
+import { RegStep1 } from "./pages/Registration/RegStep1";
+import { RegStep2 } from "./pages/Registration/RegStep2";
 import { Header } from "./components/Header";
-import { Auth } from "./pages/Auth";
-import { Restore } from "./pages/Restore";
+import { Auth } from "./pages/Auth/Auth";
+import { Restore } from "./pages/Auth/RestorePas/Restore";
 import { useUserData } from "./hooks/useUserData";
-import { Invite } from "./pages/Invite";
-import { Registration } from "./pages/Registration";
+import { Invite } from "./pages/Invite/Invite";
+import { Registration } from "./pages/Registration/Registration";
 
 export const App = () => {
   let isUserAuth = useUserData().isAuth;

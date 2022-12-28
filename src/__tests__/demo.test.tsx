@@ -1,6 +1,6 @@
 import React from "react";
 import { render, renderHook, act } from "@testing-library/react";
-import { Landing } from "../client/pages/Landing";
+import { Landing } from "../client/pages/Landing/Landing";
 import useCounter from "./testingHook";
 import { describe, test } from "vitest";
 describe("demo", () => {

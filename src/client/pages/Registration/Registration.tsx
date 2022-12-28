@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import { RegStep1 } from "../components/RegStep1";
-import { RegStep2 } from "../components/RegStep2";
+import { RegStep1 } from "./RegStep1";
+import { RegStep2 } from "./RegStep2";
 
 export const Registration: React.FC = () => {
   const [step, setStep] = useState(1);

@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { useSearchParams } from "react-router-dom";
-import { isAdult } from "../components/functions/isAdult";
+import { isAdult } from "../../components/functions/isAdult";
 // import { useAppContext } from "../Context";
-import { ModalSendInvite } from "../components/ModalSendInvite";
-import { useUserData } from "../hooks/useUserData";
+import { ModalSendInvite } from "./ModalSendInvite";
+import { useUserData } from "../../hooks/useUserData";
 
 const Main = () => {
   // const { name, setName } = useAppContext();
@@ -16,7 +16,11 @@ const Main = () => {
 
   return (
     <>
-      <ModalSendInvite isVisible={isModalVisible} setVisible={setModalVisible} isAdult={isAdult(userData.dateOfBirth)}></ModalSendInvite>
+      <ModalSendInvite
+        isVisible={isModalVisible}
+        setVisible={setModalVisible}
+        isAdult={isAdult(userData.dateOfBirth)}
+      ></ModalSendInvite>
       <main className="bg-blue-300 flex flex-col items-center relative">
         <div className="my-40 p-10 bg-white rounded">
           <h1 className="text-orange-500 text-5xl font-bold text-center">Университет будущего</h1>
@@ -24,6 +28,7 @@ const Main = () => {
           <p className="text-lg uppercase text-center max-w-[1030px] mt-4">Контент</p>
           <div className="flex mt-10 justify-evenly">
             <button
+              type="button"
               className="text-white text-base leading-6 font-normal py-2 px-3 rounded-lg w-40 bg-orange-600"
               onClick={() => setModalVisible(true)}
             >
@@ -31,6 +36,7 @@ const Main = () => {
             </button>
             {isAdult(userData.dateOfBirth) && (
               <button
+                type="button"
                 className="text-white text-base leading-6 font-normal py-2 px-3 rounded-lg w-40 bg-orange-600"
                 onClick={() => {}}
               >

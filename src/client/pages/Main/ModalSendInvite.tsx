@@ -1,8 +1,8 @@
 import React, { PropsWithChildren, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import useInput from "../hooks/useInput";
-import { useUserData } from "../hooks/useUserData";
-import { IModalProps, Modal } from "./Modal";
+import useInput from "../../hooks/useInput";
+import { useUserData } from "../../hooks/useUserData";
+import { IModalProps, Modal } from "../../components/Modal";
 
 export interface IModalPropsInvite extends IModalProps {
   isAdult: boolean;
@@ -53,20 +53,20 @@ export const ModalSendInvite: React.FC<PropsWithChildren<IModalPropsInvite>> = (
         </label>
         <div>
           <button
+            type="button"
             className="text-white text-sm leading-6 font-medium py-2 px-3 rounded-lg bg-orange-600 mx-2"
             onClick={() => setVisible(false)}
-            type="button"
           >
             Отмена
           </button>
           <button
+            type="button"
             className="text-white text-sm leading-6 font-medium py-2 px-3 rounded-lg bg-orange-600 mx-2 disabled:bg-gray-500"
             onClick={() => {
               sendInvitation();
               navigate(isAdult ? "/Invite?forParent=false" : "/Invite?forParent=true");
               logout();
             }}
-            type="button"
             disabled={!(input.isEmailValid || input.isTelValid)}
           >
             Отправить приглашение

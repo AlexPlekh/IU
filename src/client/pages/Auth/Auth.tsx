@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { API_URLS } from "../../server/routes/api";
-import { useUserData } from "../hooks/useUserData";
+import { API_URLS } from "../../../server/routes/api";
+import { useUserData } from "../../hooks/useUserData";
 
 // import { TestAPIFoo } from "../components/TestAPIFoo";
 

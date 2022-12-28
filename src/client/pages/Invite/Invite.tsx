@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { useUserData } from "../hooks/useUserData";
+import { useUserData } from "../../hooks/useUserData";
 
 export const Invite = () => {
   const navigate = useNavigate();
@@ -12,6 +12,7 @@ export const Invite = () => {
       <label className="flex flex-col items-center p-5 bg-white w-max m-auto">
         Пользователь приглашает Вас в семейную группу.
         <button
+          type="button"
           className="text-white text-sm leading-6 font-medium py-2 px-3 rounded-lg bg-orange-600 my-2"
           onClick={() =>
             navigate(

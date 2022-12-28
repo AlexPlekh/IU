@@ -1,26 +1,26 @@
 import React, { useState, useEffect, ChangeEvent, useRef, useSyncExternalStore } from "react";
-import { API_URLS } from "../../server/routes/api";
-import { IUseInput } from "../hooks/useInput";
+import { API_URLS } from "../../../server/routes/api";
+import { IUseInput } from "../../hooks/useInput";
 // import { useUserDataStore } from "../hooks/useUserDataStore";
 // import { userDataStore } from "../store/userDataStore";
 
-interface TelNumberInputProps {
-  telNumber: IUseInput;
-  isTelConfirmed: boolean;
-  setTelConfirmed: React.Dispatch<React.SetStateAction<boolean>>;
+interface EmailInputProps {
+  email: IUseInput;
+  isEmailConfirmed: boolean;
+  setEmailConfirmed: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-export const TelNumberInput: React.FC<TelNumberInputProps> = ({ telNumber, isTelConfirmed, setTelConfirmed }) => {
+export const Emailnput: React.FC<EmailInputProps> = ({ email, isEmailConfirmed, setEmailConfirmed }) => {
   const [isCodeSended, setIsCodeSended] = useState(false);
   const [codeInputValue, setCodeInputValue] = useState("");
 
-  const requestTelCode = async (telNumber: string) => {
-    let response = await fetch(API_URLS.requestTelCode, {
+  const requestEmailCode = async (email: string) => {
+    let response = await fetch(API_URLS.requestEmailCode, {
       method: "POST",
       headers: {
         "Content-Type": "application/json;charset=utf-8",
       },
-      body: JSON.stringify({ telNumber }),
+      body: JSON.stringify({ email }),
     });
     let resText = await response.text();
     console.log(resText);
@@ -29,65 +29,66 @@ export const TelNumberInput: React.FC<TelNumberInputProps> = ({ telNumber, isTel
 
   const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    if (!isCodeSended) requestTelCode(telNumber.value);
+    if (!isCodeSended) requestEmailCode(email.value);
     else {
       setIsCodeSended(false);
       setCodeInputValue("");
-      setTelConfirmed(false);
+      setEmailConfirmed(false);
     }
   };
 
-  const checkCode = async (code: string) => {
-    let response = await fetch(API_URLS.checkTelCode, {
+  const checkEmailCode = async (code: string) => {
+    let response = await fetch(API_URLS.checkEmailCode, {
       method: "POST",
       headers: {
         "Content-Type": "application/json;charset=utf-8",
       },
-      body: JSON.stringify({ telCode: code }),
+      body: JSON.stringify({ emailCode: code }),
     });
     let resText = await response.text();
-    if (resText === "Telephone number is confirmed") setTelConfirmed(true);
-    else setTelConfirmed(false);
+    if (resText === "Email is confirmed") setEmailConfirmed(true);
+    else setEmailConfirmed(false);
     console.log(resText);
   };
 
   const handleChangeCodeInput = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.value.length === 4) checkCode(e.target.value);
     setCodeInputValue(e.target.value);
+    if (e.target.value.length === 4) checkEmailCode(e.target.value);
   };
 
   return (
     <>
       <div className="flex gap-2">
         <input
-          name="telNumber"
-          value={telNumber.value}
-          onChange={telNumber.onChange}
-          onBlur={telNumber.onBlur}
+          name="email"
+          value={email.value}
+          onChange={email.onChange}
+          onBlur={email.onBlur}
           className={"flex-1 border-solid border-gray-400 border rounded px-1 bg-blue-100"}
-          type="tel"
-          placeholder="+7 999 999 9999"
+          type="email"
+          placeholder="E-mail"
           hidden={isCodeSended}
         />
         <button
-          name="requestTelCode"
-          className={"border border-black rounded " + (telNumber.isValid ? "bg-green-200" : "bg-yellow-200")}
+          type="button"
+          name="requestEmailCode"
+          className={"border border-black rounded " + (email.isValid ? "bg-green-200" : "bg-yellow-200")}
           onClick={handleClick}
-          disabled={!telNumber.isValid && !isCodeSended}
+          disabled={!email.isValid && !isCodeSended}
         >
           {isCodeSended ? "<=" : "=>"}
         </button>
         <input
           name="codeInput"
           onChange={handleChangeCodeInput}
-          value={isTelConfirmed ? "" : codeInputValue}
-          disabled={isTelConfirmed}
+          value={isEmailConfirmed ? "" : codeInputValue}
+          disabled={isEmailConfirmed}
           className={
             "flex-1 border-solid border-gray-400 border rounded px-1 " +
-            (isTelConfirmed ? "bg-green-200 placeholder-green-800" : "bg-blue-100")
+            (isEmailConfirmed ? "bg-green-200 placeholder-green-800" : "bg-blue-100")
           }
           type="text"
-          placeholder={isTelConfirmed ? "Номер телефона подтверждён" : "Введите код из SMS"}
+          placeholder={isEmailConfirmed ? "E-mail подтвержден" : "Введите код из e-mail"}
           maxLength={4}
           hidden={!isCodeSended}
         />

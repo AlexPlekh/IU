@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import useInput from "../hooks/useInput";
+import useInput from "../../hooks/useInput";
 import { Emailnput } from "./Emailnput";
 import { TelNumberInput } from "./TelNumberInput";
-import eye from "../img/eye.svg";
-import eyeSlash from "../img/eye-slash.svg";
-import { useRegData } from "../hooks/useRegData";
-import { API_URLS } from "../../server/routes/api";
-import { useUserData } from "../hooks/useUserData";
-import { setInputColour } from "./functions/setInputColour";
+import eye from "../../img/eye.svg";
+import eyeSlash from "../../img/eye-slash.svg";
+import { useRegData } from "../../hooks/useRegData";
+import { API_URLS } from "../../../server/routes/api";
+import { useUserData } from "../../hooks/useUserData";
+import { setInputColour } from "../../components/functions/setInputColour";
 
 export interface IRegStep2 {
   backStep: () => void;
@@ -123,11 +123,10 @@ export const RegStep2: React.FC<IRegStep2> = ({ backStep }) => {
             {"Номер телефона не соответствует требованиям"}
           </span>
 
-
           <span className="text-gray-500 text-center">Или</span>
           <span className="text-gray-500 text-center">E-mail</span>
           <Emailnput email={email} setEmailConfirmed={setEmailConfirmed} isEmailConfirmed={isEmailConfirmed} />
-          
+
           <span
             className="bg-red-200 mt-2 px-1 rounded text-sm text-red-800 border border-red-800"
             hidden={!email.isDirty || email.isValid || isTelConfirmed}
@@ -198,6 +197,7 @@ export const RegStep2: React.FC<IRegStep2> = ({ backStep }) => {
 
           <div className="flex gap-5 self-center my-5">
             <button
+              type="button"
               onClick={e => {
                 e.preventDefault();
                 backStep();

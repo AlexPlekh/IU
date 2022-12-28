@@ -1,10 +1,10 @@
 import React, { SyntheticEvent, useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import useInput from "../hooks/useInput";
+import useInput from "../../hooks/useInput";
 import { DateOfBirthInput } from "./DateOfBirthInput";
-import { useRegData } from "../hooks/useRegData";
-import { isAdult } from "./functions/isAdult";
-import { setInputColour } from "./functions/setInputColour";
+import { useRegData } from "../../hooks/useRegData";
+import { isAdult } from "../../components/functions/isAdult";
+import { setInputColour } from "../../components/functions/setInputColour";
 
 export interface IRegStep1 {
   nextStep: () => void;
@@ -129,6 +129,7 @@ export const RegStep1: React.FC<IRegStep1> = ({ nextStep }) => {
 
           <div className="flex gap-5 self-center my-5">
             <button
+              type="button"
               onClick={e => {
                 e.preventDefault();
                 navigate("/");
