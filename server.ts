@@ -6,7 +6,8 @@ import compression from "compression";
 import serveStatic from "serve-static";
 import { createServer as createViteServer } from "vite";
 import bodyParser from "body-parser";
-import { API_URLS, CheckEmailCode, CheckTelCode, Login, Logout, RequestEmailCode, RequestTelCode, NewUser } from "./src/server/routes/api"
+import { API_URLS, CheckEmailCode, CheckTelCode, Login, Logout, RequestEmailCode, RequestTelCode, NewUser, GetUser } from "./src/server/routes/api"
+let cookieParser = require("cookie-parser")
 
 const isTest = process.env.NODE_ENV === "test" || !!process.env.VITE_TEST_BUILD;
 
@@ -54,6 +55,7 @@ async function createServer(isProd = process.env.NODE_ENV === "production") {
 
   app.use(bodyParser.json());
   app.use(bodyParser.text());
+  app.use(cookieParser());
 
   // let smsCode = "";
   // let emailCode = "";
@@ -65,7 +67,8 @@ async function createServer(isProd = process.env.NODE_ENV === "production") {
 
   app.post(API_URLS.login, Login)
   app.post(API_URLS.newUser, NewUser)
-  app.post(API_URLS.logout, Logout)
+  app.get(API_URLS.logout, Logout)
+  app.get(API_URLS.getUser, GetUser)
 
   app.use("*", async (req: Request, res: Response, next: NextFunction) => {
     const url = req.originalUrl;
