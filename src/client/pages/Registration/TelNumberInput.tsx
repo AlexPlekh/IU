@@ -8,9 +8,10 @@ interface TelNumberInputProps {
   telNumber: IUseInput;
   isTelConfirmed: boolean;
   setTelConfirmed: React.Dispatch<React.SetStateAction<boolean>>;
+  setTelAlreadyExist: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-export const TelNumberInput: React.FC<TelNumberInputProps> = ({ telNumber, isTelConfirmed, setTelConfirmed }) => {
+export const TelNumberInput: React.FC<TelNumberInputProps> = ({ telNumber, isTelConfirmed, setTelConfirmed, setTelAlreadyExist }) => {
   const [isCodeSended, setIsCodeSended] = useState(false);
   const [codeInputValue, setCodeInputValue] = useState("");
 
@@ -34,6 +35,7 @@ export const TelNumberInput: React.FC<TelNumberInputProps> = ({ telNumber, isTel
       setIsCodeSended(false);
       setCodeInputValue("");
       setTelConfirmed(false);
+      setTelAlreadyExist(false);
     }
   };
 

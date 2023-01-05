@@ -14,8 +14,8 @@ export interface IUseInput {
   isDirty: boolean;
 }
 
-const useInput = (validations: validations) => {
-  const [value, setValue] = useState("");
+const useInput = (validations: validations, initialValue?: string) => {
+  const [value, setValue] = useState(initialValue || "");
   const [isDirty, setDirty] = useState(false);
   const valid = useValidation(value, validations);
 

@@ -1,24 +1,23 @@
 import React, { useEffect, useState } from "react";
 
 interface DateOfBirthInputProps {
-  setUserBirthData: React.Dispatch<React.SetStateAction<Date>>;
+  setUserBirthDate: React.Dispatch<React.SetStateAction<Date>>;
+  initialDate: Date;
 }
 
-export const DateOfBirthInput: React.FC<DateOfBirthInputProps> = ({ setUserBirthData }) => {
-  const today = new Date();
-
-  const [year, setYear] = useState<number>(today.getFullYear());
-  const [month, setMonth] = useState<number>(0);
-  const [day, setDay] = useState<number>(1);
+export const DateOfBirthInput: React.FC<DateOfBirthInputProps> = ({ setUserBirthDate, initialDate }) => {
+  const [year, setYear] = useState<number>(initialDate.getFullYear());
+  const [month, setMonth] = useState<number>(initialDate.getMonth());
+  const [day, setDay] = useState<number>(initialDate.getDate());
 
   useEffect(() => {
-    setUserBirthData(new Date(year, month, day));
-  }, [year, month, day, setUserBirthData]);
+    setUserBirthDate(new Date(year, month, day));
+  }, [year, month, day, setUserBirthDate]);
 
   const generateYearOptions = () => {
     const arr = [];
     const startYear = 1900;
-    const endYear = new Date().getFullYear();
+    const endYear = new Date().getFullYear() - 1;
     for (let i = endYear; i >= startYear; i--) {
       arr.push(
         <option key={i} value={i}>
@@ -72,6 +71,7 @@ export const DateOfBirthInput: React.FC<DateOfBirthInputProps> = ({ setUserBirth
     <div>
       <select
         onChange={e => setDay(+e.target.value)}
+        value={day}
         className="w-[100px] border-solid border-gray-400 border rounded-l text-center"
         name=""
         id="day"
@@ -81,6 +81,7 @@ export const DateOfBirthInput: React.FC<DateOfBirthInputProps> = ({ setUserBirth
 
       <select
         onChange={e => setMonth(+e.target.value)}
+        value={month}
         className="w-[100px] border-solid border-gray-400 border rounded-l text-center"
         name=""
         id="month"
@@ -90,6 +91,7 @@ export const DateOfBirthInput: React.FC<DateOfBirthInputProps> = ({ setUserBirth
 
       <select
         onChange={e => setYear(+e.target.value)}
+        value={year}
         className="w-[100px] border-solid border-gray-400 border rounded-l text-center"
         name=""
         id="year"

@@ -1,43 +1,23 @@
 import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { API_URLS } from "../../../server/routes/api";
+import { Link } from "react-router-dom";
+import { fetchLogin } from "../../components/fetches/fetches";
 import { useUserData } from "../../hooks/useUserData";
 
-// import { TestAPIFoo } from "../components/TestAPIFoo";
-
 export const Auth: React.FC = () => {
-  let navigate = useNavigate();
   const [userName, setUserName] = useState(""); // userName здесь - это телефон или почта
   const [password, setPassword] = useState("");
   const userData = useUserData();
   const [wrongLogin, setWrongLogin] = useState(false);
 
-  const Login = async () => {
-    let response = await fetch(API_URLS.login, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json;charset=utf-8",
-      },
-      body: JSON.stringify({
-        tel: userName,
-        email: userName.toLowerCase(),
-        password: password,
-      }),
-    });
-    if (response.ok) {
-      let res = await response.json();
-      if (res.login) {
-        userData.setState({
-          isAuth: true,
-          ...res.userData,
-          dateOfBirth: new Date(Date.parse(res.userData.dateOfBirth)),
-        });
-        navigate("/");
-      }
-    } else if (response.status === 401) {
-      setWrongLogin(true);
-    }
-  };
+  function Login() {
+    fetchLogin(userName, password)
+      .then(user => {
+        userData.setState(user);
+      })
+      .catch(e => {
+        setWrongLogin(true);
+      });
+  }
 
   return (
     <main>
@@ -55,17 +35,17 @@ export const Auth: React.FC = () => {
               id="userName"
             />
           </label>
-            <label className="flex flex-col mt-1">
-              Пароль
-              <input
-                className="border-solid border-gray-400 border rounded px-1"
-                type="password"
-                onChange={e => setPassword(e.target.value)}
-                value={password}
-                name="password"
-                id="password"
-              />
-            </label>
+          <label className="flex flex-col mt-1">
+            Пароль
+            <input
+              className="border-solid border-gray-400 border rounded px-1"
+              type="password"
+              onChange={e => setPassword(e.target.value)}
+              value={password}
+              name="password"
+              id="password"
+            />
+          </label>
           <span className="bg-red-200 mt-1 px-2 py-1 rounded text-red-800 border border-red-800" hidden={!wrongLogin}>
             Неправильные телефон, email или пароль
           </span>

@@ -1,20 +1,21 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import useInput from "../../hooks/useInput";
 import { Emailnput } from "./Emailnput";
 import { TelNumberInput } from "./TelNumberInput";
 import eye from "../../img/eye.svg";
 import eyeSlash from "../../img/eye-slash.svg";
-import { useRegData } from "../../hooks/useRegData";
 import { API_URLS } from "../../../server/routes/api";
 import { useUserData } from "../../hooks/useUserData";
 import { setInputColour } from "../../components/functions/setInputColour";
+import { IRegData } from "./Registration";
 
 export interface IRegStep2 {
   backStep: () => void;
+  regData: IRegData;
 }
 
-export const RegStep2: React.FC<IRegStep2> = ({ backStep }) => {
+export const RegStep2: React.FC<IRegStep2> = ({ backStep, regData }) => {
   let navigate = useNavigate();
   const [dataValid, setDataValid] = useState<boolean>(false);
   const [isTelConfirmed, setTelConfirmed] = useState<boolean>(false);
@@ -25,8 +26,10 @@ export const RegStep2: React.FC<IRegStep2> = ({ backStep }) => {
   const confirmPassword = useInput(["isEmpty", "validPassword"]);
   const [isFirstPasVisible, setFirstPasVisible] = useState(false);
   const [isSecondPasVisible, setSecondPasVisible] = useState(false);
-  const stepOneRegData = useRegData().regData;
   const userData = useUserData();
+  const [isTelAlreadyExist, setTelAlreadyExist] = useState(false);
+  const [isEmailAlreadyExist, setEmailAlreadyExist] = useState(false);
+  const inviterId = useSearchParams()[0].get("inviterId");
 
   useEffect(() => {
     setDataValid((isTelConfirmed || isEmailConfirmed) && password.isValid && password.value === confirmPassword.value);
@@ -39,31 +42,35 @@ export const RegStep2: React.FC<IRegStep2> = ({ backStep }) => {
     setSecondPasVisible(!isSecondPasVisible);
   };
 
-  const sendNewUser = async () => {
+  async function sendNewUser() {
     let response = await fetch(API_URLS.newUser, {
       method: "POST",
       headers: {
         "Content-Type": "application/json;charset=utf-8",
       },
       body: JSON.stringify({
-        name: stepOneRegData.username,
-        surname: stepOneRegData.surname,
+        name: regData.username,
+        surname: regData.surname,
         tel: isTelConfirmed ? telNumber.value : null,
         email: isEmailConfirmed ? email.value.toLowerCase() : null,
-        dateOfBirth: stepOneRegData.dateOfBirth,
+        dateOfBirth: regData.dateOfBirth,
         password: password.value,
+        inviterId: inviterId,
       }),
     });
     let res = await response.json();
-    if (res.login) {
+    if (res.loginStatus === 0) {
       userData.setState({
-        isAuth: true,
-        ...res.userData,
-        dateOfBirth: new Date(Date.parse(res.userData.dateOfBirth)),
+        ...res.user,
+        dateOfBirth: new Date(Date.parse(res.user.dateOfBirth)),
       });
       navigate("/?newUser=true");
+      return;
     }
-  };
+    if (res.message === `User with that telephone already exist`) setTelAlreadyExist(true);
+    if (res.message === `User with that email already exist`) setEmailAlreadyExist(true);
+    return;
+  }
 
   const GoReg = (e: React.SyntheticEvent) => {
     e.preventDefault();
@@ -114,7 +121,12 @@ export const RegStep2: React.FC<IRegStep2> = ({ backStep }) => {
           }}
         >
           <span className="text-gray-500 text-center">Введите номер телефона</span>
-          <TelNumberInput telNumber={telNumber} setTelConfirmed={setTelConfirmed} isTelConfirmed={isTelConfirmed} />
+          <TelNumberInput
+            telNumber={telNumber}
+            setTelConfirmed={setTelConfirmed}
+            isTelConfirmed={isTelConfirmed}
+            setTelAlreadyExist={setTelAlreadyExist}
+          />
 
           <span
             className="bg-red-200 mt-2 px-1 rounded text-sm text-red-800 border border-red-800"
@@ -123,15 +135,34 @@ export const RegStep2: React.FC<IRegStep2> = ({ backStep }) => {
             {"Номер телефона не соответствует требованиям"}
           </span>
 
+          <span
+            className="bg-red-200 mt-2 px-1 rounded text-sm text-red-800 border border-red-800"
+            hidden={!isTelAlreadyExist}
+          >
+            {"Пользователь с таким номером телефона уже зарегистрирован"}
+          </span>
+
           <span className="text-gray-500 text-center">Или</span>
           <span className="text-gray-500 text-center">E-mail</span>
-          <Emailnput email={email} setEmailConfirmed={setEmailConfirmed} isEmailConfirmed={isEmailConfirmed} />
+          <Emailnput
+            email={email}
+            setEmailConfirmed={setEmailConfirmed}
+            isEmailConfirmed={isEmailConfirmed}
+            setEmailAlreadyExist={setEmailAlreadyExist}
+          />
 
           <span
             className="bg-red-200 mt-2 px-1 rounded text-sm text-red-800 border border-red-800"
             hidden={!email.isDirty || email.isValid || isTelConfirmed}
           >
             {"Email не соответствует требованиям"}
+          </span>
+
+          <span
+            className="bg-red-200 mt-2 px-1 rounded text-sm text-red-800 border border-red-800"
+            hidden={!isEmailAlreadyExist}
+          >
+            {"Пользователь с таким email уже зарегистрирован"}
           </span>
 
           <label className="text-gray-500 text-center flex flex-col relative">

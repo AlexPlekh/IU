@@ -6,7 +6,7 @@ import compression from "compression";
 import serveStatic from "serve-static";
 import { createServer as createViteServer } from "vite";
 import bodyParser from "body-parser";
-import { API_URLS, CheckEmailCode, CheckTelCode, Login, Logout, RequestEmailCode, RequestTelCode, NewUser, GetUser } from "./src/server/routes/api"
+import api, { API_URLS } from "./src/server/routes/api"
 let cookieParser = require("cookie-parser")
 
 const isTest = process.env.NODE_ENV === "test" || !!process.env.VITE_TEST_BUILD;
@@ -60,15 +60,18 @@ async function createServer(isProd = process.env.NODE_ENV === "production") {
   // let smsCode = "";
   // let emailCode = "";
   
-  app.post(API_URLS.requestTelCode, RequestTelCode)
-  app.post(API_URLS.checkTelCode, CheckTelCode)
-  app.post(API_URLS.requestEmailCode, RequestEmailCode)
-  app.post(API_URLS.checkEmailCode, CheckEmailCode)
+  app.post(API_URLS.requestTelCode, api.requestTelCode)
+  app.post(API_URLS.checkTelCode, api.checkTelCode)
+  app.post(API_URLS.requestEmailCode, api.requestEmailCode)
+  app.post(API_URLS.checkEmailCode, api.checkEmailCode)
 
-  app.post(API_URLS.login, Login)
-  app.post(API_URLS.newUser, NewUser)
-  app.get(API_URLS.logout, Logout)
-  app.get(API_URLS.getUser, GetUser)
+  app.post(API_URLS.login, api.login)
+  app.post(API_URLS.newUser, api.newUser)
+  app.get(API_URLS.logout, api.logout)
+  app.get(API_URLS.getUser, api.getUser)
+
+  app.post(API_URLS.addInFamilyGroup, api.addInFamilyGroup)
+  app.get(API_URLS.getInviteId, api.getInviteId)
 
   app.use("*", async (req: Request, res: Response, next: NextFunction) => {
     const url = req.originalUrl;

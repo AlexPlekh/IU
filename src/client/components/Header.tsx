@@ -1,33 +1,19 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { useNavigate } from "react-router-dom";
 import { API_URLS } from "../../server/routes/api";
 import { useUserData } from "../hooks/useUserData";
 
 import logo from "../img/logo.svg";
+import { fetchLogout } from "./fetches/fetches";
 
 export const Header: React.FC = () => {
   let navigate = useNavigate();
   const userData = useUserData();
-  const setUserData = userData.setState
-  const logout = async () => {
-    userData.nullifyData();
-    await fetch(API_URLS.logout);
-  };
 
-  useEffect(() => {
-    async function getUserData() {
-      let response = await fetch(API_URLS.getUser);
-      if (response.ok) {
-        let res = await response.json();
-        setUserData({
-          ...res,
-          isAuth: true,
-          dateOfBirth: new Date(Date.parse(res.dateOfBirth)),
-        });
-      }
-    }
-    getUserData();
-  }, [setUserData]);
+  function logout() {
+    fetchLogout();
+    userData.nullifyData();
+  }
 
   return (
     <header className={"flex justify-between items-center"}>
@@ -44,7 +30,6 @@ export const Header: React.FC = () => {
         onClick={() => {
           if (userData.isAuth) {
             logout();
-            fetch(API_URLS.logout);
             navigate("/");
           } else {
             navigate("/Auth");
@@ -54,6 +39,18 @@ export const Header: React.FC = () => {
       >
         {userData.isAuth ? "Выйти" : "Войти"}
       </button>
+
+      {/* Test Button */}
+      <button
+        type="button"
+        onClick={() => {
+          
+        }}
+        className="bg-orange-500 rounded-sm px-3 py-1 mx-3 my-1 text-white"
+      >
+        Test API Button
+      </button>
+      {/* Test Button */}
     </header>
   );
 };

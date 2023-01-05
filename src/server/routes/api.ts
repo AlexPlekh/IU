@@ -1,9 +1,7 @@
 "use strict";
-import { createHash } from "crypto";
 import { Request, Response } from "express";
-import { IUser } from "src/client/hooks/useUserData";
-import { usersStore, IUserData } from "../Data/usersStore";
-
+import { IUserRegData } from "types/Interfaces";
+import { usersStore } from "../Data/usersStore";
 
 export const API_URLS = {
   requestTelCode: "/API/Registration/RequestTelCode",
@@ -14,6 +12,9 @@ export const API_URLS = {
   login: "/API/Login",
   logout: "/API/Logout",
   getUser: "/API/GetUser",
+  isInFamilyGroup: "/API/isInFamilyGroup",
+  addInFamilyGroup: "/API/addInFamilyGroup",
+  getInviteId: "/API/getInviteId",
 };
 
 /**
@@ -28,78 +29,109 @@ export const API_URLS = {
 let smsCode = "";
 let emailCode = "";
 
-export async function RequestTelCode(req: Request, res: Response) {
-  const payload = req.body;
-  if (payload.telNumber) {
-    smsCode = Math.floor(Math.random() * 9000 + 1000).toString();
-    res.status(200).send(`SMS on ${payload.telNumber} sent (${smsCode})`);
-  } else res.status(400).send(`Bad request`);
-}
+const api = {
+  async requestTelCode(req: Request, res: Response) {
+    const payload = req.body;
+    if (payload.telNumber) {
+      smsCode = Math.floor(Math.random() * 9000 + 1000).toString();
+      res.status(200).send(`SMS on ${payload.telNumber} sent (${smsCode})`);
+    } else res.status(400).send(`Bad request`);
+  },
 
-export async function CheckTelCode(req: Request, res: Response) {
-  const payload = req.body;
-  if (payload.telCode && smsCode) {
-    if (payload.telCode === smsCode) {
-      res.status(200).send(`Telephone number is confirmed`);
-    } else res.status(200).send(`Wrong code`);
-  } else res.status(400).send(`Bad request`);
-}
+  async checkTelCode(req: Request, res: Response) {
+    const payload = req.body;
+    if (payload.telCode && smsCode) {
+      if (payload.telCode === smsCode) {
+        res.status(200).send(`Telephone number is confirmed`);
+      } else res.status(200).send(`Wrong code`);
+    } else res.status(400).send(`Bad request`);
+  },
 
-export async function RequestEmailCode(req: Request, res: Response) {
-  const payload = req.body;
-  if (payload.email) {
-    emailCode = Math.floor(Math.random() * 9000 + 1000).toString();
-    res.status(200).send(`Code (${emailCode}) on ${payload.email} sent`);
-  } else res.status(400).send(`Bad request`);
-}
+  async requestEmailCode(req: Request, res: Response) {
+    const payload = req.body;
+    if (payload.email) {
+      emailCode = Math.floor(Math.random() * 9000 + 1000).toString();
+      res.status(200).send(`Code (${emailCode}) on ${payload.email} sent`);
+    } else res.status(400).send(`Bad request`);
+  },
 
-export async function CheckEmailCode(req: Request, res: Response) {
-  const payload = req.body;
-  if (payload.emailCode && emailCode) {
-    if (payload.emailCode === emailCode) {
-      res.status(200).send(`Email is confirmed`);
-    } else res.status(200).send(`Wrong code`);
-  } else res.status(400).send(`Bad request`);
-}
+  async checkEmailCode(req: Request, res: Response) {
+    const payload = req.body;
+    if (payload.emailCode && emailCode) {
+      if (payload.emailCode === emailCode) {
+        res.status(200).send(`Email is confirmed`);
+      } else res.status(200).send(`Wrong code`);
+    } else res.status(400).send(`Bad request`);
+  },
 
-export async function Login(req: Request, res: Response) {
-  const payload = req.body;
-  if (payload.tel || payload.email) {
-    let user = usersStore.findUser(payload.tel) || usersStore.findUser(payload.email);
-    if (user) {
-      if (payload.password === user.password) {
-        res
-          .status(200)
-          .cookie("id", user.id, { httpOnly: true })
-          .send({ userData: user, login: true, message: `User ${user.name} ${user.surname} logged in` });
-      } else {
-        return res.status(401).send(`Wrong telephone, email or password`);
+  async login(req: Request, res: Response) {
+    const payload = req.body;
+    if (payload.tel || payload.email) {
+      let userServerData = usersStore.findUser(payload.tel) || usersStore.findUser(payload.email);
+      if (userServerData) {
+        const user = usersStore.getClientDataFromServerData(userServerData);
+        if (payload.password === userServerData.password) {
+          res
+            .status(200)
+            .cookie("id", userServerData.id, { httpOnly: true })
+            .send({ user, loginStatus: 0, message: "User logged in" });
+        } else {
+          return res.send({ message: `Wrong telephone, email or password`, loginStatus: 1 });
+        }
+      } else return res.send({ message: "User not found", loginStatus: 2 });
+    } else return res.status(400).send(`Bad request`);
+  },
+
+  async getUser(req: Request, res: Response) {
+    const id = req.cookies.id;
+    if (id) {
+      const userServerData = usersStore.findUserById(id);
+      if (userServerData) {
+        const user = usersStore.getClientDataFromServerData(userServerData);
+        return res.status(200).send({ user, loginStatus: 0, message: "User logged in" });
       }
-    } else return res.status(401).send(`User not found`);
-  } else return res.status(400).send(`Bad request`);
-}
+      return res.send({ message: "User not found", loginStatus: 2 });
+    }
+    return res.send({ message: "User not logged in", loginStatus: 3 });
+  },
 
-// Исправить, чтобы не отправлял пароль и id
+  async logout(req: Request, res: Response) {
+    res.status(200).clearCookie("id", { httpOnly: true, maxAge: 1200 }).send("Logout");
+  },
 
-export async function GetUser(req: Request, res: Response) {
-  const id = req.cookies.id;
-  if (id) {
-    const userData = usersStore.findUserById(id)
-    return res.status(200).send(userData);
-  }
-  return res.status(400).send("User not found");
-}
+  // Регистрация нового пользователя
+  async newUser(req: Request, res: Response) {
+    const payload: IUserRegData = req.body;
 
-export async function Logout(req: Request, res: Response) {
-  res.status(200).clearCookie("id", { httpOnly: true, maxAge: 1200 }).send("Logout");
-}
+    if (payload.tel && usersStore.findUser(payload.tel))
+      return res.status(400).send({ message: `User with that telephone already exist` });
+    if (payload.email && usersStore.findUser(payload.email))
+      return res.status(400).send({ message: `User with that email already exist` });
 
-export async function NewUser(req: Request, res: Response) {
-  const payload: IUser = req.body;
-  if (payload.tel && usersStore.findUser(payload.tel))
-    return res.status(400).send({ message: `User with that telephone already exist` });
-  if (payload.email && usersStore.findUser(payload.email))
-    return res.status(400).send({ message: `User with that email already exist` });
-  usersStore.addUser(payload);
-  Login(req, res);
-}
+    usersStore.addUser(payload);
+    api.login(req, res);
+  },
+
+  async addInFamilyGroup(req: Request, res: Response) {
+    const id = req.cookies.id;
+    if (!id) return res.send({ message: "User not logged in", loginStatus: 3 });
+
+    const payload = req.body;
+    if (!payload.inviterId) return res.status(400).send(`Bad request`);
+
+    const inviter = usersStore.findUserById(id);
+    if (!inviter) return res.send(`Invitation not found`);
+
+    usersStore.addFamilyMember(inviter.familyGroup, id);
+    res.status(200).send("Added in family group");
+  },
+
+  async getInviteId(req: Request, res: Response) {
+    const id = req.cookies.id;
+    if (!id) return res.send({ message: "User not logged in", loginStatus: 3 });
+
+    res.status(200).send({ inviterId: id });
+  },
+};
+
+export default api;

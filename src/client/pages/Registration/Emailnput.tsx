@@ -8,9 +8,10 @@ interface EmailInputProps {
   email: IUseInput;
   isEmailConfirmed: boolean;
   setEmailConfirmed: React.Dispatch<React.SetStateAction<boolean>>;
+  setEmailAlreadyExist: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-export const Emailnput: React.FC<EmailInputProps> = ({ email, isEmailConfirmed, setEmailConfirmed }) => {
+export const Emailnput: React.FC<EmailInputProps> = ({ email, isEmailConfirmed, setEmailConfirmed, setEmailAlreadyExist }) => {
   const [isCodeSended, setIsCodeSended] = useState(false);
   const [codeInputValue, setCodeInputValue] = useState("");
 
@@ -34,6 +35,7 @@ export const Emailnput: React.FC<EmailInputProps> = ({ email, isEmailConfirmed, 
       setIsCodeSended(false);
       setCodeInputValue("");
       setEmailConfirmed(false);
+      setEmailAlreadyExist(false);
     }
   };
 

@@ -1,11 +1,11 @@
-import React, { useState } from "react";
+import React from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { useUserData } from "../../hooks/useUserData";
 
 export const Invite = () => {
   const navigate = useNavigate();
   const [params] = useSearchParams();
   const isInviteForParent = params.get("forParent") === "true";
+  const inviterId = params.get("inviterId");
 
   return (
     <div className="p-5 bg-blue-100">
@@ -17,8 +17,8 @@ export const Invite = () => {
           onClick={() =>
             navigate(
               isInviteForParent
-                ? "/Registration?isInvited=true&isInvitedForParent=true"
-                : "/Registration?isInvited=true",
+                ? `/Registration?inviterId=${inviterId}&isInvitedForParent=true`
+                : `/Registration?inviterId=${inviterId}`,
             )
           }
         >

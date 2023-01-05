@@ -2,44 +2,40 @@ import React, { SyntheticEvent, useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import useInput from "../../hooks/useInput";
 import { DateOfBirthInput } from "./DateOfBirthInput";
-import { useRegData } from "../../hooks/useRegData";
 import { isAdult } from "../../components/functions/isAdult";
 import { setInputColour } from "../../components/functions/setInputColour";
+import { IRegData } from "./Registration";
 
 export interface IRegStep1 {
   nextStep: () => void;
+  regData: IRegData;
+  setRegData: React.Dispatch<React.SetStateAction<IRegData>>;
 }
 
-export const RegStep1: React.FC<IRegStep1> = ({ nextStep }) => {
+export const RegStep1: React.FC<IRegStep1> = ({ nextStep, regData, setRegData }) => {
   let navigate = useNavigate();
   const [dataValid, setDataValid] = useState<boolean>(false);
-  const userName = useInput(["isEmpty", "validUserName"]);
-  const userSurname = useInput(["isEmpty", "validUserName"]);
-  const [userBirthData, setUserBirthData] = useState<Date>(new Date());
-  const [isInvited] = useSearchParams();
-  const needResponsibility = isInvited.get("isInvitedForParent") === "true";
+  const userName = useInput(["isEmpty", "validUserName"], regData.username);
+  const userSurname = useInput(["isEmpty", "validUserName"], regData.surname);
+  const [userBirthDate, setUserBirthDate] = useState(regData.dateOfBirth);
+  const needResponsibility = useSearchParams()[0].get("isInvitedForParent") === "true";
   const [isResponsible, setResponsible] = useState(false);
   const [isCheckboxDirty, setCheckboxDirty] = useState(false);
 
   useEffect(() => {
     setDataValid(
-      userName.isValid && userSurname.isValid && (!needResponsibility || (isResponsible && isAdult(userBirthData))),
+      userName.isValid && userSurname.isValid && (!needResponsibility || (isResponsible && isAdult(userBirthDate))),
     );
-  }, [userName.isValid, userSurname.isValid, needResponsibility, isResponsible, userBirthData]);
-
-  const regData = useRegData();
-
-  const setRegData = () =>
-    regData.setState({
-      username: userName.value,
-      surname: userSurname.value,
-      dateOfBirth: userBirthData,
-    });
+  }, [userName.isValid, userSurname.isValid, needResponsibility, isResponsible, userBirthDate]);
 
   const handleClickNext = (e: SyntheticEvent) => {
     e.preventDefault();
     if (dataValid) {
-      setRegData();
+      setRegData({
+        username: userName.value,
+        surname: userSurname.value,
+        dateOfBirth: userBirthDate,
+      });
       nextStep();
     }
   };
@@ -97,14 +93,14 @@ export const RegStep1: React.FC<IRegStep1> = ({ nextStep }) => {
           </span>
 
           <span className="text-gray-500 text-center mb-2">Дата рождения</span>
-          <DateOfBirthInput setUserBirthData={setUserBirthData} />
+          <DateOfBirthInput setUserBirthDate={setUserBirthDate} initialDate={userBirthDate}/>
           {needResponsibility && (
             <>
               <span
                 className="bg-red-200 mt-2 px-1 rounded text-sm text-red-800 border border-red-800"
-                hidden={isAdult(userBirthData) || !isCheckboxDirty}
+                hidden={isAdult(userBirthDate) || !isCheckboxDirty}
               >
-                {!isAdult(userBirthData) && "Вы должны быть старше 18 лет"}
+                {!isAdult(userBirthDate) && "Вы должны быть старше 18 лет"}
               </span>
 
               <label className="text-center mt-2">

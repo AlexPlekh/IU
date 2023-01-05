@@ -1,22 +1,12 @@
 import { useSyncExternalStore } from "react";
+import { IUserClientData } from "types/Interfaces";
 import { createStore } from "../store/createStore";
 
-export interface IUser {
-  name: string | null;
-  surname: string | null;
-  tel: string | null;
-  email: string | null;
-  dateOfBirth: Date | null;
-  password: string | null;
-  isAuth: boolean,
-}
-
-const store = createStore<IUser>({
+const store = createStore<IUserClientData>({
   name: null,
   surname: null,
   dateOfBirth: null,
   email: null,
-  password: null,
   tel: null,
   isAuth: false,
 });
@@ -31,7 +21,6 @@ export const useUserData = () => {
         surname: null,
         dateOfBirth: null,
         email: null,
-        password: null,
         tel: null,
         isAuth: false,
       }),
