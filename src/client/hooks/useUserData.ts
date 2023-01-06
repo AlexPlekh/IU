@@ -9,6 +9,7 @@ const store = createStore<IUserClientData>({
   email: null,
   tel: null,
   isAuth: false,
+  inFamilyGroup: false,
 });
 
 export const useUserData = () => {
@@ -23,6 +24,7 @@ export const useUserData = () => {
         email: null,
         tel: null,
         isAuth: false,
+        inFamilyGroup: false,
       }),
     setState: store.setState,
   };
