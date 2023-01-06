@@ -4,7 +4,7 @@ import { API_URLS } from "../../server/routes/api";
 import { useUserData } from "../hooks/useUserData";
 
 import logo from "../img/logo.svg";
-import { fetchLogout } from "./fetches/fetches";
+import { fetchGetCourses, fetchLogout } from "./fetches/fetches";
 
 export const Header: React.FC = () => {
   let navigate = useNavigate();
@@ -41,16 +41,17 @@ export const Header: React.FC = () => {
       </button>
 
       {/* Test Button */}
-      <button
+{/*       <button
         type="button"
         onClick={() => {
-          
+          fetchGetCourses().then(res => console.log(res));
         }}
         className="bg-orange-500 rounded-sm px-3 py-1 mx-3 my-1 text-white"
       >
         Test API Button
-      </button>
+      </button> */}
       {/* Test Button */}
+      
     </header>
   );
 };

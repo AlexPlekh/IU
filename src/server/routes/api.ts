@@ -1,6 +1,7 @@
 "use strict";
 import { Request, Response } from "express";
 import { IUserRegData } from "types/Interfaces";
+import { coursesStore } from "../Data/coursesStore";
 import { usersStore } from "../Data/usersStore";
 
 export const API_URLS = {
@@ -15,6 +16,7 @@ export const API_URLS = {
   isInFamilyGroup: "/API/isInFamilyGroup",
   addInFamilyGroup: "/API/addInFamilyGroup",
   getInviteId: "/API/getInviteId",
+  getCourses: "/API/getCourses",
 };
 
 /**
@@ -131,6 +133,16 @@ const api = {
     if (!id) return res.send({ message: "User not logged in", loginStatus: 3 });
 
     res.status(200).send({ inviterId: id });
+  },
+
+  async getCourses(req: Request, res: Response) {
+    const id = req.cookies.id;
+    if (!id) return res.send({ message: "User not logged in", loginStatus: 3 });
+    const user = usersStore.findUserById(id);
+    if (!user) return res.send({ message: "User not found", loginStatus: 2 });
+
+    const coursesData = coursesStore.getCoursesDataForUser(user.ownedCourses);
+    res.status(200).send(coursesData);
   },
 };
 

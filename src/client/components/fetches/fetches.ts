@@ -68,3 +68,13 @@ export async function fetchGetInviterId() {
   if (responseData.loginStatus) throw new AuthError(responseData.message, +responseData.loginStatus);
   return responseData.inviterId;
 }
+
+
+// todo
+export async function fetchGetCourses() {
+  const response = await fetch(API_URLS.getCourses);
+  if (!response.ok) return;
+  const responseData = await response.json();
+  if (responseData.loginStatus) throw new AuthError(responseData.message, +responseData.loginStatus);
+  return responseData;
+}
