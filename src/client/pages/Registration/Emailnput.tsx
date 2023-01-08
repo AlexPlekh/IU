@@ -11,8 +11,14 @@ interface EmailInputProps {
   setEmailAlreadyExist: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-export const Emailnput: React.FC<EmailInputProps> = ({ email, isEmailConfirmed, setEmailConfirmed, setEmailAlreadyExist }) => {
+export const Emailnput: React.FC<EmailInputProps> = ({
+  email,
+  isEmailConfirmed,
+  setEmailConfirmed,
+  setEmailAlreadyExist,
+}) => {
   const [isCodeSended, setIsCodeSended] = useState(false);
+  const [isCodeWrong, setCodeWrong] = useState(false);
   const [codeInputValue, setCodeInputValue] = useState("");
 
   const requestEmailCode = async (email: string) => {
@@ -36,6 +42,7 @@ export const Emailnput: React.FC<EmailInputProps> = ({ email, isEmailConfirmed, 
       setCodeInputValue("");
       setEmailConfirmed(false);
       setEmailAlreadyExist(false);
+      setCodeWrong(false);
     }
   };
 
@@ -48,8 +55,13 @@ export const Emailnput: React.FC<EmailInputProps> = ({ email, isEmailConfirmed, 
       body: JSON.stringify({ emailCode: code }),
     });
     let resText = await response.text();
-    if (resText === "Email is confirmed") setEmailConfirmed(true);
-    else setEmailConfirmed(false);
+    if (resText === "Email is confirmed") {
+      setEmailConfirmed(true);
+      setCodeWrong(false);
+    } else {
+      setEmailConfirmed(false);
+      setCodeWrong(true);
+    }
     console.log(resText);
   };
 
@@ -95,6 +107,9 @@ export const Emailnput: React.FC<EmailInputProps> = ({ email, isEmailConfirmed, 
           hidden={!isCodeSended}
         />
       </div>
+      <span className="bg-red-200 mt-2 px-1 rounded text-sm text-red-800 border border-red-800" hidden={!isCodeWrong}>
+        {"Неверный код подтверждения"}
+      </span>
     </>
   );
 };
