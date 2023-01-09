@@ -1,22 +1,33 @@
-import React from "react";
-import { useNavigate } from "react-router-dom";
-import { API_URLS } from "../../server/routes/api";
-import { useUserData } from "../hooks/useUserData";
-
-import logo from "../img/logo.svg";
-import { fetchGetCourses, fetchLogout } from "./fetches/fetches";
+import React from "react"
+import logo from "../img/logo.svg"
+import { useNavigate, Link } from "react-router-dom"
+import { useUserData } from "../hooks/useUserData"
+import { fetchLogout } from "./fetches/fetches"
 
 export const Header: React.FC = () => {
-  let navigate = useNavigate();
-  const userData = useUserData();
+  let navigate = useNavigate()
+  const userData = useUserData()
 
-  function logout() {
-    fetchLogout();
-    userData.nullifyData();
+  const logout = async () => {
+    let res = await fetchLogout()
+    if (res.ok) {
+      userData.nullifyData()
+      navigate("/")
+    }
+  }
+  const login = () => {
+    navigate("/Auth")
+  }
+  const loginToggle = () => {
+    if (userData.isAuth) {
+      logout()
+    } else {
+      login()
+    }
   }
 
   return (
-    <header className={"flex justify-between items-center"}>
+    <header className={"flex justify-between items-center h-16 py-4 px-4 shadow"}>
       <img
         src={logo}
         alt="Лого"
@@ -25,33 +36,32 @@ export const Header: React.FC = () => {
         }}
         className="max-h-8 mx-3 my-1 cursor-pointer"
       />
+      <div>
+        <nav>
+          <Link 
+              className="rounded-lg px-3 py-2 text-slate-700 font-medium hover:bg-slate-100 hover:text-slate-900" 
+              to="/subscribe">
+                  Подписки
+          </Link>
+          <Link 
+              className="rounded-lg px-3 py-2 text-slate-700 font-medium hover:bg-slate-100 hover:text-slate-900" 
+              to="/catalog">
+                  Каталог
+          </Link>
+          <Link 
+              className="rounded-lg px-3 py-2 text-slate-700 font-medium hover:bg-slate-100 hover:text-slate-900" 
+              to="/profile">
+                  Профиль
+          </Link>
+        </nav>
+      </div>
       <button
         type="button"
-        onClick={() => {
-          if (userData.isAuth) {
-            logout();
-            navigate("/");
-          } else {
-            navigate("/Auth");
-          }
-        }}
-        className="bg-orange-500 rounded-sm px-3 py-1 mx-3 my-1 text-white"
+        onClick={loginToggle}
+        className="bg-orange-500 rounded-sm px-4 py-1.5 mr-3 text-white"
       >
         {userData.isAuth ? "Выйти" : "Войти"}
       </button>
-
-      {/* Test Button */}
-{/*       <button
-        type="button"
-        onClick={() => {
-          fetchGetCourses().then(res => console.log(res));
-        }}
-        className="bg-orange-500 rounded-sm px-3 py-1 mx-3 my-1 text-white"
-      >
-        Test API Button
-      </button> */}
-      {/* Test Button */}
-      
     </header>
-  );
-};
+  )
+}

@@ -10,6 +10,9 @@ import { useUserData } from "./hooks/useUserData";
 import { Invite } from "./pages/Invite/Invite";
 import { Registration } from "./pages/Registration/Registration";
 import { fetchUserData } from "./components/fetches/fetches";
+import Catalog from "./pages/Catalog/Catalog";
+import CatalogDetail from './pages/Catalog/CatalogDetail';
+import Profile from './pages/Profile/Profile';
 
 export const App = () => {
   let location = useLocation();
@@ -32,6 +35,10 @@ export const App = () => {
         <Route path="/Auth/Restore" element={isAuth ? <Navigate to={"/"} /> : <Restore />}></Route>
         <Route path="/Registration" element={<Registration />}></Route>
         <Route path="/Invite" element={<Invite />}></Route>
+
+        <Route path='/profile' element={<Profile />} />
+        <Route path="/catalog" element={<Catalog />}></Route>
+        <Route path='/catalog/:id' element={<CatalogDetail />} />
       </Routes>
     </ContextWrapper>
   );

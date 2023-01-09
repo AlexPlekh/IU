@@ -58,7 +58,7 @@ export async function fetchLogin(userName: string, password: string) {
 
 export async function fetchLogout() {
   const response = await fetch(API_URLS.logout);
-  return;
+  return response;
 }
 
 export async function fetchGetInviterId() {
@@ -68,7 +68,6 @@ export async function fetchGetInviterId() {
   if (responseData.loginStatus) throw new AuthError(responseData.message, +responseData.loginStatus);
   return responseData.inviterId;
 }
-
 
 // todo
 export async function fetchGetCourses() {
