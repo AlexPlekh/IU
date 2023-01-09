@@ -36,25 +36,27 @@ export const Header: React.FC = () => {
         }}
         className="max-h-8 mx-3 my-1 cursor-pointer"
       />
-      <div>
-        <nav>
-          <Link 
-              className="rounded-lg px-3 py-2 text-slate-700 font-medium hover:bg-slate-100 hover:text-slate-900" 
-              to="/subscribe">
-                  Подписки
-          </Link>
-          <Link 
-              className="rounded-lg px-3 py-2 text-slate-700 font-medium hover:bg-slate-100 hover:text-slate-900" 
-              to="/catalog">
-                  Каталог
-          </Link>
-          <Link 
-              className="rounded-lg px-3 py-2 text-slate-700 font-medium hover:bg-slate-100 hover:text-slate-900" 
-              to="/profile">
-                  Профиль
-          </Link>
-        </nav>
-      </div>
+      {userData.isAuth &&
+        <div>
+          <nav>
+            <Link 
+                className="rounded-lg px-3 py-2 text-slate-700 font-medium hover:bg-slate-100 hover:text-slate-900" 
+                to="/subscribe">
+                    Подписки
+            </Link>
+            <Link 
+                className="rounded-lg px-3 py-2 text-slate-700 font-medium hover:bg-slate-100 hover:text-slate-900" 
+                to="/catalog">
+                    Каталог
+            </Link>
+            <Link 
+                className="rounded-lg px-3 py-2 text-slate-700 font-medium hover:bg-slate-100 hover:text-slate-900" 
+                to="/profile">
+                    Профиль
+            </Link>
+          </nav>
+        </div>
+      }
       <button
         type="button"
         onClick={loginToggle}
