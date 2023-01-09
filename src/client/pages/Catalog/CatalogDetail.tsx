@@ -59,7 +59,7 @@ const CatalogDetail: React.FC = () => {
                             state={course}
                         >
                                 Приобрести
-                        </Link>
+                        </Link>{/* Ребенок не может купить курс */}
                     </div>
                 </div>
            }
