@@ -1,5 +1,6 @@
 import { IUserClientData } from "types/Interfaces";
 import { API_URLS } from "../../../server/routes/api";
+import { ICourse } from '../../../../types/Interfaces';
 
 export class AuthError extends Error {
   statusCode: number;
@@ -76,4 +77,13 @@ export async function fetchGetCourses() {
   const responseData = await response.json();
   if (responseData.loginStatus) throw new AuthError(responseData.message, +responseData.loginStatus);
   return responseData;
+}
+
+export async function fetchGetCourseById(id: string) {
+  const response = await fetch(API_URLS.getCourses);
+  if (!response.ok) return;
+  const responseData = await response.json();
+
+  const course = responseData.filter((item: ICourse) => item.id === id);
+  return course[0] || null;
 }

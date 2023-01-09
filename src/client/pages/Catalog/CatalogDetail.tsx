@@ -1,25 +1,28 @@
 import React from 'react'
 import { useParams, Link } from 'react-router-dom'
 import { useState, useEffect } from 'react'
-//import { coursesArr } from './Catalog'
-// import Button from './UI/Button/Button';
-// import { useCurrentUser, setCurrentUser } from '../hooks/useUserData';
-//import { Course } from 'types/types'
 import { useUserData } from "../../hooks/useUserData"
-
+import { fetchGetCourseById } from '../../components/fetches/fetches'
+import { ICourse } from '../../../../types/Interfaces'
 
 const CatalogDetail: React.FC = () => {
     const param = useParams()
-    const id = Number(param.id)
-   // const [post, setPost] = useState<Course | null>(null)
-
+    const [course, setCourse] = useState<ICourse>()
     const user = useUserData()
 
-    // useEffect(() => {
-    //     if (id) {
-    //         setPost(coursesArr.filter(p => p.id === id)[0])
-    //     }
-    // }, [id, user.purchasedСourses])
+    useEffect(() => {
+        const getCourse = async () => {
+            try {
+                if (param.id) {
+                    const response = await fetchGetCourseById(param.id)
+                    setCourse(response)
+                }
+            } catch (e: any) {
+                console.error(e) //!
+            }
+        }
+        getCourse()
+    }, [param.id])
 
     // const onFreePartBtnClick = () => {
     //     if (post) {
@@ -33,33 +36,33 @@ const CatalogDetail: React.FC = () => {
     // const isFree = user.purchasedСourses?.filter( c => c.id === post?.id)
 
     return (
-        <div>
-            {/* {post && '123'
+        <div className='container mx-auto mt-12'>
+            {course &&
                 <div>
-                    <div className='text-2xl mb-5'>{post.name}</div>
+                    <div className='text-2xl mb-5'>{course.name}</div>
                     <div className='text-gray-500'>
-                        <p>{post.description}</p>
-                        {isFree?.length !== 0 && <p>{post.freepart}</p>}
+                        <p>{course.description}</p>
+                        {/* {isFree?.length !== 0 && <p>{course.freeContent}</p>} */}
                     </div>
                     <div className='mt-12'>
-                        {isFree?.length === 0 &&
+                        {/* {isFree?.length === 0 &&
                         <button 
                             className='bg-transparent hover:bg-orange-600 border-2 border-orange-600 text-black hover:text-white rounded-lg px-5 py-2 text-black mr-5 duration-75'
                             onClick={onFreePartBtnClick}
                         >
                                 Попробовать бесплатно
                         </button>
-                        }
+                        } */}
                         <Link 
                             className='bg-orange-600 border-4 border-orange-600 hover:bg-orange-400 hover:border-orange-400 rounded-lg px-5 py-2 text-white duration-75'
                             to={'/payment'}
-                            state={post}
+                            state={course}
                         >
                                 Приобрести
                         </Link>
                     </div>
                 </div>
-           } */}
+           }
         </div>
     );
 };

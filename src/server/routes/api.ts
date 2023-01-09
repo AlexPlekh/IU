@@ -141,8 +141,12 @@ const api = {
     const user = usersStore.findUserById(id);
     if (!user) return res.send({ message: "User not found", loginStatus: 2 });
 
+    // const courseId = req.params.id
+    // console.log(req.params);
+    
     const coursesData = coursesStore.getCoursesDataForUser(user.ownedCourses);
     res.status(200).send(coursesData);
+    
   },
 };
 

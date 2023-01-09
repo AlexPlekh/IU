@@ -31,15 +31,14 @@ const Catalog: React.FC = () => {
                 ? <div><Loader /></div>
                 : <>
                     {courses.map( p => (
-                            <Link 
-                                key={p.id} 
-                                className='py-3 hover:text-orange-600 duration-75' 
-                                to={`/catalog/${p.id}`}
-                            >
-                                {p.name}
-                            </Link>
-                        ))
-                    }
+                        <Link 
+                            key={p.id} 
+                            className='py-3 hover:text-orange-600 duration-75' 
+                            to={`/catalog/${p.id}`}
+                        >
+                            {p.name}
+                        </Link>
+                    ))}
                 </>
             } 
             </div>
