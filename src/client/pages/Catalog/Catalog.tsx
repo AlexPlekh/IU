@@ -23,6 +23,8 @@ const Catalog: React.FC = () => {
         fetchCourses()
     }, [])
 
+    console.log(courses);
+
     return (
         <div className='container mx-auto mt-12'>
             <h1 className='text-2xl font-medium mb-5'>Каталог</h1>

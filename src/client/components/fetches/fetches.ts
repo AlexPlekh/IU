@@ -86,4 +86,5 @@ export async function fetchGetCourseById(id: string) {
 
   const course = responseData.filter((item: ICourse) => item.id === id);
   return course[0] || null;
+  //! rework
 }

@@ -144,7 +144,7 @@ const api = {
     // const courseId = req.params.id
     // console.log(req.params);
     
-    const coursesData = coursesStore.getCoursesDataForUser(user.ownedCourses);
+    const coursesData = coursesStore.getCoursesDataForUser(user.ownedCourses, user.freeCourses);
     res.status(200).send(coursesData);
     
   },
