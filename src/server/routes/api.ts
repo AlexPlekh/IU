@@ -148,6 +148,22 @@ const api = {
     res.status(200).send(coursesData);
     
   },
+
+  async activateCourseFreePart(req: Request, res: Response) {
+    const id = req.cookies.id;
+    if (!id) return res.send({ message: "User not logged in", loginStatus: 3 });
+    const user = usersStore.findUserById(id);
+    if (!user) return res.send({ message: "User not found", loginStatus: 2 });
+
+    const payload = req.body;
+
+    if (payload.courseId) {
+      // 
+    }
+
+    // const coursesData = usersStore.addCourseFreePartToUser(id, courseId);
+    // res.status(200).send(coursesData);
+  }
 };
 
 export default api;

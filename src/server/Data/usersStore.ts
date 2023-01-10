@@ -16,7 +16,7 @@ export const usersStore = {
       password: "admin", // по-правильному, тут должен быть хеш пароля
       familyGroup: new Set(["f0e3676f-481d-4203-aefa-be50d530ea01", "8d447fec-86d2-45be-9c35-8ebdd2c9f684"]),
       ownedCourses: new Set(["1"]),
-      freeCourses: new Set(["1"]),
+      freeCourses: new Set(["2"]),
     },
     {
       id: "8d447fec-86d2-45be-9c35-8ebdd2c9f684",
@@ -113,6 +113,16 @@ export const usersStore = {
     if (!course) throw Error("Course not found");
 
     user.ownedCourses.add(courseId);
+  },
+
+  addCourseFreePartToUser(userId: string, courseId: string) {
+    const user = usersStore.findUser(userId);
+    if (!user) throw Error("User not found");
+
+    const course = coursesStore.findCourse(courseId);
+    if (!course) throw Error("Course not found");
+
+    user.freeCourses.add(courseId);
   },
 
   addCourseToFamilyGroup(userId: string, courseId: string) {

@@ -34,20 +34,19 @@ export const coursesStore = {
 
   getCoursesDataForUser(ownedCourses: Set<string>, freeCourses: Set<string>) {
     let coursesData: ICourseClientData[] = [];
-    coursesStore.data.forEach( course => {
-      
-      if (ownedCourses.has(course.id)) {
-        coursesData.push({ ...course, isBought: true });
-      } else {
-        coursesData.push({ ...course, isBought: false, mainContent: '' });
-      }
 
-      if (freeCourses.has(course.id)) {
-        coursesData.push({ ...course, isFree: true });
-      } else {
-        coursesData.push({ ...course, isFree: false });
+    coursesStore.data.forEach( course => {
+      let isBought = false;
+      let isFree = false;
+      if (ownedCourses.has(course.id)) {
+        isBought = true
       }
-    }) //!
+      if (freeCourses.has(course.id)) {
+        isFree = true
+      }
+      coursesData.push({ ...course, isBought, isFree });
+    })
+
     return coursesData;
   },
 };

@@ -13,8 +13,6 @@ const CatalogDetail: React.FC = () => {
     const user = useUserData()
     const isAdultUser = isAdult(user.dateOfBirth)
 
-    // Проверка куплен курс или активирована бесплатная часть?
-
     useEffect(() => {
         const getCourse = async () => {
             try {
@@ -33,15 +31,8 @@ const CatalogDetail: React.FC = () => {
         if (course) {
             console.log('send to server what free part is enabled');
             // send data to server, then
-
-
-            // setCurrentUser({
-            //     ...user,
-            //     purchasedСourses: [...user.purchasedСourses, {...post, status: 'free'}]
-            // })
         }
     }
-    // const isFree = user.purchasedСourses?.filter( c => c.id === post?.id)
 
     return (
         <div className='container mx-auto mt-12'>
@@ -50,21 +41,25 @@ const CatalogDetail: React.FC = () => {
                     <div className='text-2xl mb-5'>{course.name}</div>
                     <div className='text-gray-500'>
                         <p>{course.description}</p>
-                        <p>{course.freeContent}</p>
-                        <p>{course.mainContent}</p>
+                        {course.isFree && !course.isBought && 
+                            <p>{course.freeContent}</p>
+                        }
+                        {course.isBought && 
+                            <p>{course.mainContent}</p>
+                        }
                     </div>
 
                     {!course.isBought &&
                         <div className='mt-12'>
-
-                            <button 
-                                className='bg-transparent hover:bg-orange-600 border-2 border-orange-600 text-black hover:text-white rounded-lg px-5 py-2 text-black mr-5 duration-75'
-                                onClick={onFreePartBtnClick}
-                            >
-                                    Попробовать бесплатно
-                            </button>
-
-                            { isAdultUser &&
+                            {!course.isFree &&
+                                <button 
+                                    className='bg-transparent hover:bg-orange-600 border-2 border-orange-600 text-black hover:text-white rounded-lg px-5 py-2 text-black mr-5 duration-75'
+                                    onClick={onFreePartBtnClick}
+                                >
+                                        Попробовать бесплатно
+                                </button>
+                            }
+                            {isAdultUser &&
                                 <Link 
                                     className='bg-orange-600 border-4 border-orange-600 hover:bg-orange-400 hover:border-orange-400 rounded-lg px-5 py-2 text-white duration-75'
                                     to={'/payment'}
@@ -73,7 +68,6 @@ const CatalogDetail: React.FC = () => {
                                         Приобрести
                                 </Link>
                             }
-
                         </div>
                     }
                 </div>
