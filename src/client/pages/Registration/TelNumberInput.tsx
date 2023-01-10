@@ -11,8 +11,14 @@ interface TelNumberInputProps {
   setTelAlreadyExist: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-export const TelNumberInput: React.FC<TelNumberInputProps> = ({ telNumber, isTelConfirmed, setTelConfirmed, setTelAlreadyExist }) => {
+export const TelNumberInput: React.FC<TelNumberInputProps> = ({
+  telNumber,
+  isTelConfirmed,
+  setTelConfirmed,
+  setTelAlreadyExist,
+}) => {
   const [isCodeSended, setIsCodeSended] = useState(false);
+  const [isCodeWrong, setCodeWrong] = useState(false);
   const [codeInputValue, setCodeInputValue] = useState("");
 
   const requestTelCode = async (telNumber: string) => {
@@ -36,6 +42,7 @@ export const TelNumberInput: React.FC<TelNumberInputProps> = ({ telNumber, isTel
       setCodeInputValue("");
       setTelConfirmed(false);
       setTelAlreadyExist(false);
+      setCodeWrong(false);
     }
   };
 
@@ -48,8 +55,13 @@ export const TelNumberInput: React.FC<TelNumberInputProps> = ({ telNumber, isTel
       body: JSON.stringify({ telCode: code }),
     });
     let resText = await response.text();
-    if (resText === "Telephone number is confirmed") setTelConfirmed(true);
-    else setTelConfirmed(false);
+    if (resText === "Telephone number is confirmed") {
+      setTelConfirmed(true);
+      setCodeWrong(false);
+    } else {
+      setTelConfirmed(false);
+      setCodeWrong(true);
+    }
     console.log(resText);
   };
 
@@ -95,6 +107,9 @@ export const TelNumberInput: React.FC<TelNumberInputProps> = ({ telNumber, isTel
           hidden={!isCodeSended}
         />
       </div>
+      <span className="bg-red-200 mt-2 px-1 rounded text-sm text-red-800 border border-red-800" hidden={!isCodeWrong}>
+        {"Неверный код подтверждения"}
+      </span>
     </>
   );
 };
