@@ -16,7 +16,7 @@ export const usersStore = {
       password: "admin", // по-правильному, тут должен быть хеш пароля
       familyGroup: new Set(["f0e3676f-481d-4203-aefa-be50d530ea01", "8d447fec-86d2-45be-9c35-8ebdd2c9f684"]),
       ownedCourses: new Set(["1"]),
-      freeCourses: new Set(["2"]),
+      trialCourses: new Set(["2"]),
     },
     {
       id: "8d447fec-86d2-45be-9c35-8ebdd2c9f684",
@@ -28,7 +28,7 @@ export const usersStore = {
       password: "me", // по-правильному, тут должен быть хеш пароля
       familyGroup: new Set(["f0e3676f-481d-4203-aefa-be50d530ea01", "8d447fec-86d2-45be-9c35-8ebdd2c9f684"]),
       ownedCourses: new Set(["1"]),
-      freeCourses: new Set([]),
+      trialCourses: new Set([]),
     },
     {
       id: "daf92483-c9f3-491e-885a-124262280bf0",
@@ -40,7 +40,7 @@ export const usersStore = {
       password: "me",
       familyGroup: new Set(["daf92483-c9f3-491e-885a-124262280bf0"]),
       ownedCourses: new Set(["1", "2"]),
-      freeCourses: new Set([]),
+      trialCourses: new Set([]),
     },
   ],
 
@@ -48,9 +48,9 @@ export const usersStore = {
     const id = crypto.randomUUID();
     const familyGroup = new Set([id]);
     const ownedCourses = new Set([]);
-    const freeCourses = new Set([]);
+    const trialCourses = new Set([]);
     const { inviterId, ...userData } = { ...user };
-    usersStore.data.push({ id, familyGroup, ownedCourses, freeCourses, ...userData });
+    usersStore.data.push({ id, familyGroup, ownedCourses, trialCourses, ...userData });
     if (inviterId) {
       const inviter = this.findUserById(inviterId);
       if (!inviter) throw Error("Inviter not found");
@@ -115,14 +115,14 @@ export const usersStore = {
     user.ownedCourses.add(courseId);
   },
 
-  addCourseFreePartToUser(userId: string, courseId: string) {
+  addCourseTrialPartToUser(userId: string, courseId: string) {
     const user = usersStore.findUser(userId);
     if (!user) throw Error("User not found");
 
     const course = coursesStore.findCourse(courseId);
     if (!course) throw Error("Course not found");
 
-    user.freeCourses.add(courseId);
+    user.trialCourses.add(courseId);
   },
 
   addCourseToFamilyGroup(userId: string, courseId: string) {

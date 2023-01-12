@@ -1,4 +1,4 @@
-import React from 'react'
+/* import React from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import Button from '../components/UI/Button/Button'
 import { useState } from 'react'
@@ -53,4 +53,4 @@ const Payment: React.FC = () => {
     );
 };
 
-export default Payment;
+export default Payment; */

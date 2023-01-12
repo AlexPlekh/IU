@@ -144,12 +144,12 @@ const api = {
     // const courseId = req.params.id
     // console.log(req.params);
     
-    const coursesData = coursesStore.getCoursesDataForUser(user.ownedCourses, user.freeCourses);
+    const coursesData = coursesStore.getCoursesDataForUser(user.ownedCourses, user.trialCourses);
     res.status(200).send(coursesData);
     
   },
 
-  async activateCourseFreePart(req: Request, res: Response) {
+  async activateCourseTrialPart(req: Request, res: Response) {
     const id = req.cookies.id;
     if (!id) return res.send({ message: "User not logged in", loginStatus: 3 });
     const user = usersStore.findUserById(id);
@@ -161,7 +161,7 @@ const api = {
       // 
     }
 
-    // const coursesData = usersStore.addCourseFreePartToUser(id, courseId);
+    // const coursesData = usersStore.addCourseTrialPartToUser(id, courseId);
     // res.status(200).send(coursesData);
   }
 };

@@ -41,7 +41,7 @@ const CatalogDetail: React.FC = () => {
                     <div className='text-2xl mb-5'>{course.name}</div>
                     <div className='text-gray-500'>
                         <p>{course.description}</p>
-                        {course.isFree && !course.isBought && 
+                        {course.isTrialOpen && !course.isBought && 
                             <p>{course.freeContent}</p>
                         }
                         {course.isBought && 
@@ -51,7 +51,7 @@ const CatalogDetail: React.FC = () => {
 
                     {!course.isBought &&
                         <div className='mt-12'>
-                            {!course.isFree &&
+                            {!course.isTrialOpen &&
                                 <button 
                                     className='bg-transparent hover:bg-orange-600 border-2 border-orange-600 text-black hover:text-white rounded-lg px-5 py-2 text-black mr-5 duration-75'
                                     onClick={onFreePartBtnClick}
