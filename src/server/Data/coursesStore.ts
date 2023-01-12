@@ -32,20 +32,21 @@ export const coursesStore = {
     return course || null;
   },
 
-  getCoursesDataForUser(ownedCourses: Set<string>) {
+  getCoursesDataForUser(ownedCourses: Set<string>, freeCourses: Set<string>) {
     let coursesData: ICourseClientData[] = [];
-    for (let course of coursesStore.data) {
-      let isBought: boolean;
-      let mainContent: string;
+
+    coursesStore.data.forEach( course => {
+      let isBought = false;
+      let isFree = false;
       if (ownedCourses.has(course.id)) {
-        isBought = true;
-        mainContent = course.mainContent;
-      } else {
-        isBought = false;
-        mainContent = "";
+        isBought = true
       }
-      coursesData.push({ ...course, isBought, mainContent });
-    }
+      if (freeCourses.has(course.id)) {
+        isFree = true
+      }
+      coursesData.push({ ...course, isBought, isFree });
+    })
+
     return coursesData;
   },
 };

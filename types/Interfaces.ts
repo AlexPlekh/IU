@@ -29,6 +29,7 @@ export interface IUserServerData extends IUser {
   password: string;
   familyGroup: Set<string>;
   ownedCourses: Set<string>;
+  freeCourses: Set<string>;
 }
 
 
@@ -51,5 +52,6 @@ export interface ICourseClientData {
   freeContent: string;
   mainContent: string;
   isBought: boolean;
+  isFree: boolean;
 }
 

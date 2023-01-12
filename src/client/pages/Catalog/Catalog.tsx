@@ -23,6 +23,8 @@ const Catalog: React.FC = () => {
         fetchCourses()
     }, [])
 
+    console.log(courses);
+
     return (
         <div className='container mx-auto mt-12'>
             <h1 className='text-2xl font-medium mb-5'>Каталог</h1>
@@ -31,15 +33,14 @@ const Catalog: React.FC = () => {
                 ? <div><Loader /></div>
                 : <>
                     {courses.map( p => (
-                            <Link 
-                                key={p.id} 
-                                className='py-3 hover:text-orange-600 duration-75' 
-                                to={`/catalog/${p.id}`}
-                            >
-                                {p.name}
-                            </Link>
-                        ))
-                    }
+                        <Link 
+                            key={p.id} 
+                            className='py-3 hover:text-orange-600 duration-75' 
+                            to={`/catalog/${p.id}`}
+                        >
+                            {p.name}
+                        </Link>
+                    ))}
                 </>
             } 
             </div>
