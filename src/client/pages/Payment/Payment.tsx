@@ -1,18 +1,12 @@
 import React from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
-import Button from '../components/UI/Button/Button'
 import { useState } from 'react'
-import { PaymentInvoice, Programm } from '../../../types/types.d';
-import { useCurrentUser } from '../hooks/useUserData';
-import ShareWithFamily from '../components/ShareWithFamily';
-import { useEffect } from 'react';
+import { useUserData } from '../../hooks/useUserData'
 
 const Payment: React.FC = () => {
     const location = useLocation()
-    const post = location.state as Programm // проверка что переадан курс
-
-    const user = useCurrentUser()
-
+    const post = location.state as any // проверка что переадан курс
+    const user = useUserData()
     const [toggle, setToggle] = useState(true)
     const [shareWithFamilyGroup, setShareWithFamilyGroup] = useState(false)
 
@@ -24,19 +18,26 @@ const Payment: React.FC = () => {
         setToggle(false)
     }
 
-    const [invoice, setInvoice] = useState<PaymentInvoice | null>(null)
-
-    const nav = useNavigate()
-    useEffect(() => {
-        if (!post) {
-            nav('/')
-        }
-    }, [post])
+    const [invoice, setInvoice] = useState<any>(null)
 
     return (
-        <div>
-            {user.familyGroup?.length && toggle
-                ? <ShareWithFamily onClickYes={onClickYes} onClickNo={onClickNo}/>
+        <div className='container mx-auto mt-12'>
+            {user.inFamilyGroup && toggle
+                ? <div>
+                    <div>Приобрести и поделиться с семейной группой?</div>
+                    <button 
+                        className='bg-orange-600 hover:bg-orange-400 rounded-lg px-5 py-3 text-white mt-10 mr-3'
+                        onClick={onClickYes}
+                    >
+                        Да
+                    </button>
+                    <button 
+                        className='bg-orange-600 hover:bg-orange-400 rounded-lg px-5 py-3 text-white mt-10'
+                        onClick={onClickNo}
+                    >
+                        Нет
+                    </button>
+                </div>
                 : <div>
                     <p className='text-2xl mb-5'>Покупка курса {post.name}. {shareWithFamilyGroup && <div className='text-xs'>Делимся с семейной группой</div>}</p>
                     <p><input 
@@ -45,7 +46,7 @@ const Payment: React.FC = () => {
                             value={invoice?.card} 
                             onChange={ e => setInvoice({...invoice, card: e.target.value}) }  
                             placeholder="Номер карты"/>
-                        <Button className='bg-orange-600 border-4 border-orange-600 hover:bg-orange-400 hover:border-orange-400 rounded-lg px-5 py-2 text-white duration-75 mt-5'>Оплатить</Button>
+                        <button className='bg-orange-600 border-4 border-orange-600 hover:bg-orange-400 hover:border-orange-400 rounded-lg px-5 py-2 text-white duration-75 mt-5'>Оплатить</button>
                     </p>
                 </div>
             }
@@ -54,3 +55,4 @@ const Payment: React.FC = () => {
 };
 
 export default Payment;
+//! rework

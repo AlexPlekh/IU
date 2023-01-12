@@ -4,27 +4,29 @@ import { useState, useEffect } from 'react'
 import { useUserData } from "../../hooks/useUserData"
 import { fetchGetCourseById } from '../../components/fetches/fetches'
 import { ICourseClientData } from '../../../../types/Interfaces'
-import { isAdult } from '../../components/functions/isAdult';
+import { isAdult } from '../../components/functions/isAdult'
 
 const CatalogDetail: React.FC = () => {
     const {id} = useParams()
     const [course, setCourse] = useState<ICourseClientData>()
-
+    const [error, setError] = useState<string>()
     const user = useUserData()
     const isAdultUser = isAdult(user.dateOfBirth)
 
     useEffect(() => {
-        const getCourse = async () => {
-            try {
-                if (id) {
-                    const response = await fetchGetCourseById(id)
-                    setCourse(response)
-                }
-            } catch (e: any) {
-                console.error(e) //!
+        const getCourse = async (id: string) => {
+            const response = await fetchGetCourseById(id)
+            if (response.status !== 0) {
+                console.log(response);
+                
+                setCourse(response.userCourseData)
+            } else {
+                setError(response.message)
             }
         }
-        getCourse()
+        if (id) {
+            getCourse(id)
+        }
     }, [id])
 
     const onFreePartBtnClick = () => {
@@ -36,6 +38,7 @@ const CatalogDetail: React.FC = () => {
 
     return (
         <div className='container mx-auto mt-12'>
+            {error && <div>{error}</div>}
             {course &&
                 <div>
                     <div className='text-2xl mb-5'>{course.name}</div>
@@ -76,6 +79,6 @@ const CatalogDetail: React.FC = () => {
     );
 };
 
-export default CatalogDetail;
+export default CatalogDetail
 
 // При обновлении страницы скидывает на главную

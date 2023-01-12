@@ -1,6 +1,6 @@
 "use strict";
 import { Request, Response } from "express";
-import { IUserRegData } from "types/Interfaces";
+import { ICourseClientData, IUserRegData } from "types/Interfaces";
 import { coursesStore } from "../Data/coursesStore";
 import { usersStore } from "../Data/usersStore";
 
@@ -17,6 +17,7 @@ export const API_URLS = {
   addInFamilyGroup: "/API/addInFamilyGroup",
   getInviteId: "/API/getInviteId",
   getCourses: "/API/getCourses",
+  getCourseById: "/API/getCourses/:id"
 };
 
 /**
@@ -141,29 +142,33 @@ const api = {
     const user = usersStore.findUserById(id);
     if (!user) return res.send({ message: "User not found", loginStatus: 2 });
 
-    // const courseId = req.params.id
-    // console.log(req.params);
-    
-    const coursesData = coursesStore.getCoursesDataForUser(user.ownedCourses, user.freeCourses);
-    res.status(200).send(coursesData);
-    
+    const coursesData = coursesStore.getCoursesDataForUser(user.ownedCourses, user.trialCourses);
+    res.status(200).send({coursesData, status: 1});   
   },
 
-  async activateCourseFreePart(req: Request, res: Response) {
+  async getCourseById(req: Request, res: Response) {
     const id = req.cookies.id;
     if (!id) return res.send({ message: "User not logged in", loginStatus: 3 });
     const user = usersStore.findUserById(id);
     if (!user) return res.send({ message: "User not found", loginStatus: 2 });
 
-    const payload = req.body;
+    if (req.params.id) {
+      const courseData = coursesStore.findCourse(req.params.id)
+      if (courseData) {
+        let userCourseData: ICourseClientData = {...courseData, mainContent: '', isBought: false, isFree: false}
 
-    if (payload.courseId) {
-      // 
-    }
-
-    // const coursesData = usersStore.addCourseFreePartToUser(id, courseId);
-    // res.status(200).send(coursesData);
-  }
+        if (user.ownedCourses.has(courseData.id)) {
+          userCourseData = {...userCourseData, mainContent: courseData.mainContent, isBought: true}
+        }
+        if (user.trialCourses.has(courseData.id)) {
+          userCourseData = {...userCourseData, isFree: true}
+        }
+        res.status(200).send({userCourseData, status: 1});
+      } else {
+        return res.send({ message: "Course not found", status: 0 });
+      }
+    } else res.status(400).send("Bad request");
+  },
 };
 
 export default api;

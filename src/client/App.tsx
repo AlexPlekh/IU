@@ -14,6 +14,8 @@ import Catalog from "./pages/Catalog/Catalog";
 import CatalogDetail from './pages/Catalog/CatalogDetail';
 import Profile from './pages/Profile/Profile';
 import Subscribe from "./pages/Subscribe/Subscribe";
+import ActivatePromocode from "./pages/ActivatePromocode/ActivatePromocode";
+import Payment from "./pages/Payment/Payment";
 
 export const App = () => {
   let location = useLocation();
@@ -27,11 +29,6 @@ export const App = () => {
     }).catch(e => {console.log(e.message, `statusCode: ${e.statusCode}`)});
   }, [setUserData, location]);
 
-  const navigate = useNavigate()
-  useEffect(() => {
-    if (!isAuth) navigate('/')
-  }, [isAuth])
-  
   return (
     <ContextWrapper>
       <Header />
@@ -46,8 +43,8 @@ export const App = () => {
         <Route path='/profile' element={<Profile />} />
         <Route path="/catalog" element={<Catalog />}></Route>
         <Route path='/catalog/:id' element={<CatalogDetail />} />
-        {/* <Route path='/payment' element={<Payment />} />
-          <Route path='/activate-promocode' element={<ActivatePromocode />} /> */}
+        <Route path='/payment' element={<Payment />} />
+        <Route path='/activate-promocode' element={<ActivatePromocode />} />
       </Routes>
     </ContextWrapper>
   );

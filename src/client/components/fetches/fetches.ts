@@ -80,11 +80,9 @@ export async function fetchGetCourses() {
 }
 
 export async function fetchGetCourseById(id: string) {
-  const response = await fetch(API_URLS.getCourses);
+  const response = await fetch('/API/getCourses/' + id)
   if (!response.ok) return;
   const responseData = await response.json();
 
-  const course = responseData.filter((item: ICourse) => item.id === id);
-  return course[0] || null;
-  //! rework
+  return responseData;
 }

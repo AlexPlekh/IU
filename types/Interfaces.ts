@@ -29,7 +29,7 @@ export interface IUserServerData extends IUser {
   password: string;
   familyGroup: Set<string>;
   ownedCourses: Set<string>;
-  freeCourses: Set<string>;
+  trialCourses: Set<string>;
 }
 
 

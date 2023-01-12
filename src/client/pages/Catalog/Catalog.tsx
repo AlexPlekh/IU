@@ -13,7 +13,7 @@ const Catalog: React.FC = () => {
             try {
                 setIsLoading(true)
                 const response = await fetchGetCourses()
-                setCourses(response)
+                setCourses(response.coursesData)
             } catch (e: any) {
                 console.error(e) //!
             } finally {
@@ -22,8 +22,6 @@ const Catalog: React.FC = () => {
         }
         fetchCourses()
     }, [])
-
-    console.log(courses);
 
     return (
         <div className='container mx-auto mt-12'>
