@@ -15,6 +15,8 @@ import CatalogDetail from "./pages/Catalog/CatalogDetail";
 import Profile from "./pages/Profile/Profile";
 import Subscribe from "./pages/Subscribe/Subscribe";
 import { PrivateOutlet } from "./components/PrivateOutlet";
+import ActivatePromocode from "./pages/ActivatePromocode/ActivatePromocode";
+import Payment from "./pages/Payment/Payment";
 
 export const App = () => {
   let location = useLocation();
@@ -23,6 +25,8 @@ export const App = () => {
   // при каждом переходе будет происходить запрос на сервер о состоянии пользователя
   // TODO: добавить обработку ошибок
   // TODO: уменьшить количество запросов
+  // TODO: решить проблему сброса пользователя при обновлении страницы
+  // Возможный путь - задание пользователя при рендере страницы на сервере
   useEffect(() => {
     fetchUserData()
       .then(user => {
@@ -38,12 +42,12 @@ export const App = () => {
       <Header />
       <Routes>
         <Route element={<PrivateOutlet navigateUnautorizedTo={"/Auth"} />}>
-          <Route path="/profile" element={<Profile />} />
-          <Route path="/catalog" element={<Catalog />} />
           <Route path="/subscribe" element={<Subscribe />} />
+          <Route path="/profile" element={<Profile />} />
+          <Route path="/catalog" element={<Catalog />}></Route>
           <Route path="/catalog/:id" element={<CatalogDetail />} />
-          {/* <Route path='/payment' element={<Payment />} />
-          <Route path='/activate-promocode' element={<ActivatePromocode />} /> */}
+          <Route path="/payment" element={<Payment />} />
+          <Route path="/activate-promocode" element={<ActivatePromocode />} />
         </Route>
         <Route path="/" element={isAuth ? <Main /> : <Landing />}></Route>
         <Route path="/Auth" element={isAuth ? <Navigate to={"/"} /> : <Auth />}></Route>

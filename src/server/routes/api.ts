@@ -1,6 +1,6 @@
 "use strict";
 import { Request, Response } from "express";
-import { IUserRegData } from "types/Interfaces";
+import { ICourseClientData, IUserRegData } from "types/Interfaces";
 import { coursesStore } from "../Data/coursesStore";
 import { usersStore } from "../Data/usersStore";
 
@@ -17,6 +17,7 @@ export const API_URLS = {
   addInFamilyGroup: "/API/addInFamilyGroup",
   getInviteId: "/API/getInviteId",
   getCourses: "/API/getCourses",
+  getCourseById: "/API/getCourses/:id",
 };
 
 /**
@@ -32,6 +33,7 @@ let smsCode = "";
 let emailCode = "";
 
 const api = {
+  // Отправка кода подтверждения номера телефона
   async requestTelCode(req: Request, res: Response) {
     const payload = req.body;
     if (payload.telNumber) {
@@ -40,6 +42,7 @@ const api = {
     } else res.status(400).send(`Bad request`);
   },
 
+  // Проверка кода подтверждения номера телефона
   async checkTelCode(req: Request, res: Response) {
     const payload = req.body;
     if (payload.telCode && smsCode) {
@@ -49,6 +52,7 @@ const api = {
     } else res.status(400).send(`Bad request`);
   },
 
+  // Отправка кода подтверждения email
   async requestEmailCode(req: Request, res: Response) {
     const payload = req.body;
     if (payload.email) {
@@ -57,6 +61,7 @@ const api = {
     } else res.status(400).send(`Bad request`);
   },
 
+  // Проверка кода подтверждения email
   async checkEmailCode(req: Request, res: Response) {
     const payload = req.body;
     if (payload.emailCode && emailCode) {
@@ -66,6 +71,7 @@ const api = {
     } else res.status(400).send(`Bad request`);
   },
 
+  // Авторизация
   async login(req: Request, res: Response) {
     const payload = req.body;
     if (payload.tel || payload.email) {
@@ -84,6 +90,7 @@ const api = {
     } else return res.status(400).send(`Bad request`);
   },
 
+  // Получение данных пользователя
   async getUser(req: Request, res: Response) {
     const id = req.cookies.id;
     if (id) {
@@ -97,6 +104,7 @@ const api = {
     return res.send({ message: "User not logged in", loginStatus: 3 });
   },
 
+  // Выход из учетной записи
   async logout(req: Request, res: Response) {
     res.status(200).clearCookie("id", { httpOnly: true, maxAge: 1200 }).send("Logout");
   },
@@ -114,6 +122,7 @@ const api = {
     api.login(req, res);
   },
 
+  // Добавление пользователя в семейную группу
   async addInFamilyGroup(req: Request, res: Response) {
     const id = req.cookies.id;
     if (!id) return res.send({ message: "User not logged in", loginStatus: 3 });
@@ -128,6 +137,7 @@ const api = {
     res.status(200).send("Added in family group");
   },
 
+  // Получение id для приглашения
   async getInviteId(req: Request, res: Response) {
     const id = req.cookies.id;
     if (!id) return res.send({ message: "User not logged in", loginStatus: 3 });
@@ -135,35 +145,40 @@ const api = {
     res.status(200).send({ inviterId: id });
   },
 
+    // Получение массива курсов (включая контент) для конкретного полльзователя
+    // TODO: получать контент необязательно, лучше исправить на отправку только id, названия и описания
   async getCourses(req: Request, res: Response) {
     const id = req.cookies.id;
     if (!id) return res.send({ message: "User not logged in", loginStatus: 3 });
     const user = usersStore.findUserById(id);
     if (!user) return res.send({ message: "User not found", loginStatus: 2 });
 
-    // const courseId = req.params.id
-    // console.log(req.params);
-    
     const coursesData = coursesStore.getCoursesDataForUser(user.ownedCourses, user.trialCourses);
-    res.status(200).send(coursesData);
-    
+    res.status(200).send({ coursesData, status: 1 });
   },
 
-  async activateCourseTrialPart(req: Request, res: Response) {
-    const id = req.cookies.id;
-    if (!id) return res.send({ message: "User not logged in", loginStatus: 3 });
-    const user = usersStore.findUserById(id);
+  // Получение контента курса по id
+  async getCourseById(req: Request, res: Response) {
+    const userId = req.cookies.id;
+    if (!userId) return res.send({ message: "User not logged in", loginStatus: 3 });
+    const user = usersStore.findUserById(userId);
     if (!user) return res.send({ message: "User not found", loginStatus: 2 });
 
-    const payload = req.body;
+    const courseId = req.params.id;
+    if (!courseId) return res.status(400).send("Bad request");
+    const courseData = coursesStore.findCourse(courseId);
+    if (!courseData) return res.send({ message: "Course not found", status: 0 });
 
-    if (payload.courseId) {
-      // 
+    let userCourseData: ICourseClientData = { ...courseData, mainContent: "", isBought: false, isTrialOpen: false };
+
+    if (user.ownedCourses.has(courseData.id)) {
+      userCourseData = { ...userCourseData, mainContent: courseData.mainContent, isBought: true };
     }
-
-    // const coursesData = usersStore.addCourseTrialPartToUser(id, courseId);
-    // res.status(200).send(coursesData);
-  }
+    if (user.trialCourses.has(courseData.id)) {
+      userCourseData = { ...userCourseData, isTrialOpen: true };
+    }
+    res.status(200).send({ userCourseData, status: 1 });
+  },
 };
 
 export default api;
