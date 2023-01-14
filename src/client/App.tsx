@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Main from "./pages/Main/Main";
 import { ContextWrapper } from "./Context";
 import { Route, Routes, Navigate, useLocation, useNavigate } from "react-router-dom";
@@ -17,37 +17,43 @@ import Subscribe from "./pages/Subscribe/Subscribe";
 import { PrivateOutlet } from "./components/PrivateOutlet";
 import ActivatePromocode from "./pages/ActivatePromocode/ActivatePromocode";
 import Payment from "./pages/Payment/Payment";
+import LoaderOutlet from "./components/LoaderOutlet";
 
 export const App = () => {
   let location = useLocation();
   const { setState: setUserData, isAuth } = useUserData();
+  const [isLoading, setLoading] = useState(true);
 
   // при каждом переходе будет происходить запрос на сервер о состоянии пользователя
   // TODO: добавить обработку ошибок
   // TODO: уменьшить количество запросов
-  // TODO: решить проблему сброса пользователя при обновлении страницы
-  // Возможный путь - задание пользователя при рендере страницы на сервере
+  // TODO: попробовать задавать пользователя при рендере страницы на сервере
   useEffect(() => {
+    setLoading(true);
     fetchUserData()
       .then(user => {
         setUserData(user);
       })
       .catch(e => {
         console.log(e.message, `statusCode: ${e.statusCode}`); // для тестирования
-      });
-  }, [setUserData, location]);
+      })
+      .finally(() => setLoading(false));
+  }, [setUserData]);
 
   return (
     <ContextWrapper>
       <Header />
       <Routes>
-        <Route element={<PrivateOutlet navigateUnautorizedTo={"/Auth"} />}>
-          <Route path="/subscribe" element={<Subscribe />} />
-          <Route path="/profile" element={<Profile />} />
-          <Route path="/catalog" element={<Catalog />}></Route>
-          <Route path="/catalog/:id" element={<CatalogDetail />} />
-          <Route path="/payment" element={<Payment />} />
-          <Route path="/activate-promocode" element={<ActivatePromocode />} />
+        {/* LoaderOutlet используется для предотвращения переадресации до получения данных пользователя*/}
+        <Route element={<LoaderOutlet isLoading={isLoading} />}>
+          <Route element={<PrivateOutlet navigateUnautorizedTo={"/Auth"} />}>
+            <Route path="/subscribe" element={<Subscribe />} />
+            <Route path="/profile" element={<Profile />} />
+            <Route path="/catalog" element={<Catalog />}></Route>
+            <Route path="/catalog/:id" element={<CatalogDetail />} />
+            <Route path="/payment" element={<Payment />} />
+            <Route path="/activate-promocode" element={<ActivatePromocode />} />
+          </Route>
         </Route>
         <Route path="/" element={isAuth ? <Main /> : <Landing />}></Route>
         <Route path="/Auth" element={isAuth ? <Navigate to={"/"} /> : <Auth />}></Route>
