@@ -17,8 +17,6 @@ const CatalogDetail: React.FC = () => {
     const getCourse = async (id: string) => {
       const response = await fetchGetCourseById(id);
       if (response.status !== 0) {
-        console.log(response);
-
         setCourse(response.userCourseData);
       } else {
         setError(response.message);
