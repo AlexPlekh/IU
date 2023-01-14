@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 
 export type validations = Array<"isEmpty" | "validPassword" | "validUserName" | "validEmail" | "validTelephone">;
 
-const useValidation = (value: any, validations: validations) => {
+const useValidation = (value: string, validations: validations) => {
   const [isEmpty, setEmpty] = useState(false);
   const [isPassValid, setPassValid] = useState(false);
   const [isNickValid, setNickValid] = useState(false);
@@ -23,9 +23,9 @@ const useValidation = (value: any, validations: validations) => {
           break;
         }
         case "validPassword": {
-          // Пароль должен содержать хотя бы одну цифру, одну заглавную и прописную латинскую буквы, один спецсимвол.
-          // Прочие символы не допускаются. Длина пароля от 8 до 14 символов
-            const regExp = /^(?=.*?[\d])(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[.,:;?!*+%\-<>@[\]{}/\\_{}$#])[\dA-Za-z.,:;?!*+%\-<>@[\]{}/\\_{}$#]{8,14}$/;
+          // Пароль должен содержать хотя бы одну заглавную букву, один спецсимвол.
+          // Прочие символы не допускаются. Длина пароля от 8 до 30 символов
+            const regExp = /^(?=.*?[A-ZА-ЯЁ])(?=.*?[.,:;?!*+%\-<>@[\]{}/\\_{}$#])[\dA-Za-zА-ЯЁа-яё.,:;?!*+%\-<>@[\]{}/\\_{}$#]{8,30}$/;
           if (regExp.test(value)) setPassValid(true);
           else {
             setPassValid(false);
@@ -34,7 +34,7 @@ const useValidation = (value: any, validations: validations) => {
           break;
         }
         case "validUserName": {
-          const regExp = /^[А-ЯЁA-Z][а-яА-ЯёЁa-zA-Z-]{0,29}$/; // от 1 до 20 символов от латиницы и кириллицы
+          const regExp = /^[А-ЯЁA-Z][а-яА-ЯёЁa-zA-Z-]{1,29}$/; // от 2 до 30 символов от латиницы и кириллицы, начинается с заглавной
           if (regExp.test(value)) setNickValid(true);
           else {
             setNickValid(false);
@@ -43,8 +43,8 @@ const useValidation = (value: any, validations: validations) => {
           break;
         }
         case "validEmail": {
-          const regExp = /^.{1,}@.{1,}\..{1,}$/;
-          if (regExp.test(value)) setEmailValid(true);
+          const regExp = /[a-z0-9!#$%&'*+/=?^_‘{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_‘{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/i
+          if (regExp.test(value.toLowerCase())) setEmailValid(true);
           else {
             setEmailValid(false);
             valid = false;

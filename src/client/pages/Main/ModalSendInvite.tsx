@@ -77,11 +77,11 @@ export const ModalSendInvite: React.FC<PropsWithChildren<IModalPropsInvite>> = (
               className="text-white text-sm leading-6 font-medium py-2 px-3 rounded-lg bg-orange-600 mx-2"
               onClick={() => setVisible(false)}
             >
-              Отмена
+              {isAdult ? "Отмена" : "Продолжить с ограничениями"}
             </button>
             <button
               type="button"
-              className="text-white text-sm leading-6 font-medium py-2 px-3 rounded-lg bg-orange-600 mx-2 disabled:bg-gray-500"
+              className="text-white text-sm leading-6 font-medium py-2 px-3 rounded-lg bg-green-600 mx-2 disabled:bg-gray-500"
               onClick={() => {
                 sendInvitation();
                 setStep(2);

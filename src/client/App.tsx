@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Main from "./pages/Main/Main";
 import { ContextWrapper } from "./Context";
-import { Route, Routes, Navigate, useLocation, useNavigate } from "react-router-dom";
+import { Route, Routes, Navigate, useLocation } from "react-router-dom";
 import { Landing } from "./pages/Landing/Landing";
 import { Header } from "./components/Header";
 import { Auth } from "./pages/Auth/Auth";
@@ -20,13 +20,12 @@ import Payment from "./pages/Payment/Payment";
 import LoaderOutlet from "./components/LoaderOutlet";
 
 export const App = () => {
-  let location = useLocation();
+  // let location = useLocation();
   const { setState: setUserData, isAuth } = useUserData();
   const [isLoading, setLoading] = useState(true);
 
   // при каждом переходе будет происходить запрос на сервер о состоянии пользователя
   // TODO: добавить обработку ошибок
-  // TODO: уменьшить количество запросов
   // TODO: попробовать задавать пользователя при рендере страницы на сервере
   useEffect(() => {
     setLoading(true);
@@ -46,6 +45,7 @@ export const App = () => {
       <Routes>
         {/* LoaderOutlet используется для предотвращения переадресации до получения данных пользователя*/}
         <Route element={<LoaderOutlet isLoading={isLoading} />}>
+        {/* PrivateOutlet используется для переадресации неавторизованного пользователя*/}
           <Route element={<PrivateOutlet navigateUnautorizedTo={"/Auth"} />}>
             <Route path="/subscribe" element={<Subscribe />} />
             <Route path="/profile" element={<Profile />} />
