@@ -18,6 +18,7 @@ export const API_URLS = {
   getInviteId: "/API/getInviteId",
   getCourses: "/API/getCourses",
   getCourseById: "/API/getCourses/:id",
+  enableTrialCourse: "/API/enableTrialCourse/:id",
 };
 
 /**
@@ -171,6 +172,19 @@ const api = {
     const userCourseData = coursesStore.getCourseDataForUser(courseData, user.ownedCourses, user.trialCourses)
 
     res.status(200).send({ userCourseData, status: 1 });
+  },
+
+  // Активация бесплатной части
+  async enableTrialCourse(req: Request, res: Response) {
+    const userId: string = req.cookies.id;
+    if (!userId) return res.send({ message: "User not logged in", loginStatus: 3 });
+
+    const courseId: string = req.params.id;
+    if (!courseId) return res.status(400).send("Bad request");
+
+    usersStore.addCourseTrialPartToUser(userId, courseId)
+
+    res.status(200).send({ data: {}, message: 'Succesfull', status: 1 });
   },
 };
 

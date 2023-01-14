@@ -13,9 +13,6 @@ const Catalog: React.FC = () => {
       try {
         setIsLoading(true);
         const response = await fetchGetCourses();
-        console.log(response);
-        
-
         setCourses(response.coursesData);
       } catch (e: any) {
         console.error(e); //!
