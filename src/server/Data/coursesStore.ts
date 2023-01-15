@@ -36,17 +36,23 @@ export const coursesStore = {
     let coursesData: ICourseClientData[] = [];
 
     coursesStore.data.forEach( course => {
-      let isBought = false;
-      let isTrialOpen = false;
-      if (ownedCourses.has(course.id)) {
-        isBought = true
-      }
-      if (trialCourses.has(course.id)) {
-        isTrialOpen = true
-      }
-      coursesData.push({ ...course, isBought, isTrialOpen });
+      let courseData = coursesStore.getCourseDataForUser(course, ownedCourses, trialCourses)
+      coursesData.push(courseData);
     })
 
     return coursesData;
+  },
+
+  getCourseDataForUser(course: ICourse, ownedCourses: Set<string>, trialCourses: Set<string>) {
+      let courseData: ICourseClientData = { ...course, mainContent: "", isBought: false, isTrialOpen: false };
+
+      if (ownedCourses.has(course.id)) {
+        courseData = { ...courseData, mainContent: course.mainContent, isBought: true };
+      }
+      if (trialCourses.has(course.id)) {
+        courseData = { ...courseData, isTrialOpen: true };
+      }
+
+    return courseData;
   },
 };

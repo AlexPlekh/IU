@@ -2,7 +2,7 @@ import React from "react";
 import { useParams, Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { useUserData } from "../../hooks/useUserData";
-import { fetchGetCourseById } from "../../components/fetches/fetches";
+import { enableFreePart, fetchGetCourseById } from "../../components/fetches/fetches";
 import { ICourseClientData } from "../../../../types/Interfaces";
 import { isAdult } from "../../components/functions/isAdult";
 
@@ -17,8 +17,6 @@ const CatalogDetail: React.FC = () => {
     const getCourse = async (id: string) => {
       const response = await fetchGetCourseById(id);
       if (response.status !== 0) {
-        console.log(response);
-
         setCourse(response.userCourseData);
       } else {
         setError(response.message);
@@ -27,12 +25,11 @@ const CatalogDetail: React.FC = () => {
     if (id) {
       getCourse(id);
     }
-  }, [id]);
+  }, [id, course]);
 
   const onFreePartBtnClick = () => {
     if (course) {
-      console.log("send to server what free part is enabled");
-      // send data to server, then
+      enableFreePart(course.id)
     }
   };
 

@@ -18,6 +18,7 @@ export const API_URLS = {
   getInviteId: "/API/getInviteId",
   getCourses: "/API/getCourses",
   getCourseById: "/API/getCourses/:id",
+  enableTrialCourse: "/API/enableTrialCourse/:id",
 };
 
 /**
@@ -145,8 +146,7 @@ const api = {
     res.status(200).send({ inviterId: id });
   },
 
-    // Получение массива курсов (включая контент) для конкретного полльзователя
-    // TODO: получать контент необязательно, лучше исправить на отправку только id, названия и описания
+  // Получение массива курсов (включая контент) для конкретного полльзователя
   async getCourses(req: Request, res: Response) {
     const id = req.cookies.id;
     if (!id) return res.send({ message: "User not logged in", loginStatus: 3 });
@@ -169,15 +169,22 @@ const api = {
     const courseData = coursesStore.findCourse(courseId);
     if (!courseData) return res.send({ message: "Course not found", status: 0 });
 
-    let userCourseData: ICourseClientData = { ...courseData, mainContent: "", isBought: false, isTrialOpen: false };
+    const userCourseData = coursesStore.getCourseDataForUser(courseData, user.ownedCourses, user.trialCourses)
 
-    if (user.ownedCourses.has(courseData.id)) {
-      userCourseData = { ...userCourseData, mainContent: courseData.mainContent, isBought: true };
-    }
-    if (user.trialCourses.has(courseData.id)) {
-      userCourseData = { ...userCourseData, isTrialOpen: true };
-    }
     res.status(200).send({ userCourseData, status: 1 });
+  },
+
+  // Активация бесплатной части
+  async enableTrialCourse(req: Request, res: Response) {
+    const userId: string = req.cookies.id;
+    if (!userId) return res.send({ message: "User not logged in", loginStatus: 3 });
+
+    const courseId: string = req.params.id;
+    if (!courseId) return res.status(400).send("Bad request");
+
+    usersStore.addCourseTrialPartToUser(userId, courseId)
+
+    res.status(200).send({ data: {}, message: 'Succesfull', status: 1 });
   },
 };
 
