@@ -50,7 +50,7 @@ export const Auth: React.FC = () => {
             Неправильные телефон, email или пароль
           </span>
           <button
-            className="bg-green-400 text-white rounded px-3 py-1 mt-1 disabled:bg-gray-400"
+            className="bg-green-600 text-white rounded px-3 py-1 mt-1 disabled:bg-gray-400"
             type="submit"
             onClick={e => {
               e.preventDefault();

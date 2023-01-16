@@ -23,7 +23,7 @@ const Main = () => {
             <p className="text-center text-red-400">! Часть контента недоступна для несовершеннолеетних !</p>
           )}
           <div className="flex mt-10 justify-evenly">
-            {!userData.inFamilyGroup && (
+            {(!userData.inFamilyGroup || isUserAdult) && (
               <button
                 type="button"
                 className="text-white text-base leading-6 font-normal py-2 px-3 rounded-lg w-40 bg-orange-600"
