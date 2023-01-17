@@ -35,7 +35,7 @@ function useTelephoneInput(validations: validations, initialValue?: string) {
 
     const input = e.target;
     let value = input.value;
-    console.log("selectionStart: ", input.selectionStart, " , ", "selectionEnd: ", input.selectionEnd, " , ", "selectionDirection: ", input.selectionDirection)
+    // console.log("selectionStart: ", input.selectionStart, " , ", "selectionEnd: ", input.selectionEnd, " , ", "selectionDirection: ", input.selectionDirection)
     let telNumber = unMaskTel(value);
     setInputValue(maskTel(telNumber));
     setTelNumber(telNumber);

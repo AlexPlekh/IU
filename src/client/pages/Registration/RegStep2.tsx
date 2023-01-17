@@ -127,6 +127,7 @@ export const RegStep2: React.FC<IRegStep2> = ({ backStep, regData }) => {
             setTelConfirmed={setTelConfirmed}
             isTelConfirmed={isTelConfirmed}
             setTelAlreadyExist={setTelAlreadyExist}
+            ref={telNumber.ref}
           />
 
           <span
