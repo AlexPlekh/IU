@@ -6,7 +6,7 @@ function useTelephoneInput(validations: validations, initialValue?: string) {
   const [telNumber, setTelNumber] = useState<string>("");
   const [isDirty, setDirty] = useState(false);
   const valid = useValidation(inputValue, validations);
-  const ref = useRef(null);
+  // const ref = useRef(null);
 
   function onBlur(e: React.FocusEvent) {
     setDirty(true);
@@ -42,7 +42,7 @@ function useTelephoneInput(validations: validations, initialValue?: string) {
   }
 
   return {
-    ref,
+    // ref,
     value: inputValue,
     telNumber,
     onChange,
