@@ -1,47 +1,55 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect, useLayoutEffect } from "react";
+import useValidation, { validations } from "./useValidation";
 
-const useTelephoneInput = () => {
-  const [value, setValue] = useState<string>("");
+function useTelephoneInput(validations: validations, initialValue?: string) {
+  const [inputValue, setInputValue] = useState<string>(initialValue || "");
   const [telNumber, setTelNumber] = useState<string>("");
+  const [isDirty, setDirty] = useState(false);
+  const valid = useValidation(inputValue, validations);
+  const ref = useRef(null);
 
-  const [name, setName] = useState<string>("");
+  function onBlur(e: React.FocusEvent) {
+    setDirty(true);
+  }
 
-  const unMaskTel = (maskedTel: string) => maskedTel.replace(/\+7|\D/g, "");
-
-  const maskTel = (tel: string) => {
-    let maskedTel = "+7";
-    if (tel.length > 0) maskedTel += ` ${tel.substring(0, 3)}`;
-    if (tel.length > 3) maskedTel += ` ${tel.substring(3, 6)}`;
-    if (tel.length > 6) maskedTel += ` ${tel.substring(6, 10)}`;
-    return maskedTel;
-  };
-
-  const telInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    let val = e.target.value;
-    if (val !== "+" && val !== "+7") {
-      val = unMaskTel(val).slice(0, 10);
-      setName(maskTel(val));
-    } else setName(val);
-  };
-
-  const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    let input = e.target;
-    let val = input.value;
-    let numberValue = val.replace(/\D/g, "");
-
-    if (["7", "+", "8", "9"].indexOf(val[0]) > -1) {
-        if (val.match(/^\+7/))
-      setValue(numberValue);
-    } else {
-      setValue("+" + numberValue.slice(0, 13));
+  function onChange(e: React.ChangeEvent<HTMLInputElement>) {
+    e.preventDefault();
+    function unMaskTel(maskedTel: string) {
+      if (maskedTel === "+") return maskedTel;
+      let unmaskedTel = maskedTel.replace(/\D/g, "");
+      if (unmaskedTel) unmaskedTel = "+" + unmaskedTel;
+      return unmaskedTel;
     }
-  };
+
+    function maskTel(unmaskedTel: string) {
+      let maskedTel = unmaskedTel;
+
+      if (maskedTel.length > 1 && maskedTel[1] !== "7") maskedTel = "+7" + maskedTel.slice(1);
+      if (maskedTel.length > 2) maskedTel = maskedTel.slice(0, 2) + "(" + maskedTel.slice(2);
+      if (maskedTel.length > 6) maskedTel = maskedTel.slice(0, 6) + ")" + maskedTel.slice(6);
+      if (maskedTel.length > 10) maskedTel = maskedTel.slice(0, 10) + "-" + maskedTel.slice(10);
+      if (maskedTel.length > 13) maskedTel = maskedTel.slice(0, 13) + "-" + maskedTel.slice(13, 15);
+
+      return maskedTel;
+    }
+
+    const input = e.target;
+    let value = input.value;
+    console.log("selectionStart: ", input.selectionStart, " , ", "selectionEnd: ", input.selectionEnd, " , ", "selectionDirection: ", input.selectionDirection)
+    let telNumber = unMaskTel(value);
+    setInputValue(maskTel(telNumber));
+    setTelNumber(telNumber);
+  }
 
   return {
-    value,
+    ref,
+    value: inputValue,
     telNumber,
     onChange,
+    onBlur,
+    isDirty,
+    ...valid,
   };
-};
+}
 
 export default useTelephoneInput;
