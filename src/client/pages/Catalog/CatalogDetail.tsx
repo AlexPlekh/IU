@@ -1,5 +1,5 @@
 import React from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { useUserData } from "../../hooks/useUserData";
 import { enableFreePart, fetchGetCourseById } from "../../components/fetches/fetches";
@@ -12,6 +12,7 @@ const CatalogDetail: React.FC = () => {
   const [error, setError] = useState<string>();
   const user = useUserData();
   const isAdultUser = isAdult(user.dateOfBirth);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const getCourse = async (id: string) => {
@@ -56,13 +57,14 @@ const CatalogDetail: React.FC = () => {
                 </button>
               )}
               {isAdultUser && (
-                <Link
+                <button
                   className="bg-orange-600 border-4 border-orange-600 hover:bg-orange-400 hover:border-orange-400 rounded-lg px-5 py-2 text-white duration-75"
-                  to={"/payment"}
-                  state={course}
+                  onClick={() => navigate('/payment', {
+                    state: course
+                  })}
                 >
                   Приобрести
-                </Link>
+                </button>
               )}
             </div>
           )}
@@ -73,5 +75,3 @@ const CatalogDetail: React.FC = () => {
 };
 
 export default CatalogDetail;
-
-// При обновлении страницы скидывает на главную - это проблема из за сброса всех переменных при перезагрузке страницы

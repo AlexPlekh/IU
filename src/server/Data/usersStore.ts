@@ -106,13 +106,22 @@ export const usersStore = {
   },
 
   addCourseToUser(userId: string, courseId: string) {
-    const user = usersStore.findUser(userId);
+    const user = usersStore.findUserById(userId);
     if (!user) throw Error("User not found");
 
     const course = coursesStore.findCourse(courseId);
     if (!course) throw Error("Course not found");
 
     user.ownedCourses.add(courseId);
+  },
+
+  addCourseToFamilyGroup(userId: string, courseId: string) {
+    const user = usersStore.findUserById(userId);
+    if (!user) throw Error("User not found");
+
+    for (let familyMemberId of user.familyGroup) {
+      usersStore.addCourseToUser(familyMemberId, courseId);
+    }
   },
 
   addCourseTrialPartToUser(userId: string, courseId: string) {
@@ -125,12 +134,4 @@ export const usersStore = {
     user.trialCourses.add(courseId);
   },
 
-  addCourseToFamilyGroup(userId: string, courseId: string) {
-    const user = usersStore.findUserById(userId);
-    if (!user) throw Error("User not found");
-
-    for (let familyMemberId of user.familyGroup) {
-      usersStore.addCourseToUser(familyMemberId, courseId);
-    }
-  },
 };

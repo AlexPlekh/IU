@@ -94,3 +94,23 @@ export async function enableFreePart(id: string) {
 
   return responseData;
 }
+
+export async function addCourseToUser(courseId: string, shareWithFamily: boolean) {
+  const response = await fetch(API_URLS.purchaseCourse, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json;charset=utf-8",
+    },
+    body: JSON.stringify({
+      courseId,
+      shareWithFamily,
+    }),
+  });
+
+  if (response.ok) {
+    const responseData = await response.json();
+    if (responseData.status === 1) {
+      return responseData;
+    }
+  }
+}

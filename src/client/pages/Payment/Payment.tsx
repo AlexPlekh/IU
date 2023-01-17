@@ -2,13 +2,16 @@ import React from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { useUserData } from "../../hooks/useUserData";
+import { ICourseClientData } from 'types/Interfaces';
 
 const Payment: React.FC = () => {
   const location = useLocation();
-  const post = location.state as any; // проверка что передан курс
+  const course: ICourseClientData = location.state;
   const user = useUserData();
-  const [toggle, setToggle] = useState(true);
-  const [shareWithFamilyGroup, setShareWithFamilyGroup] = useState(false);
+  const [toggle, setToggle] = useState<boolean>(true);
+  const [shareWithFamilyGroup, setShareWithFamilyGroup] = useState<boolean>(false);
+  const [invoice, setInvoice] = useState<any>(null);
+  const navigate = useNavigate()
 
   const onClickYes = () => {
     setShareWithFamilyGroup(true);
@@ -17,8 +20,16 @@ const Payment: React.FC = () => {
   const onClickNo = () => {
     setToggle(false);
   };
+  const onClickBuy = () => {
+    navigate('/page-after-pay', {
+      state: {
+        courseId: course.id,
+        shareWithFamilyGroup
+      }
+    })
+  }
 
-  const [invoice, setInvoice] = useState<any>(null);
+  if (!course) navigate('/catalog')
 
   return (
     <div className="container mx-auto mt-12">
@@ -41,8 +52,8 @@ const Payment: React.FC = () => {
       ) : (
         <div>
           <p className="text-2xl mb-5">
-            Покупка курса {post.name}.{" "}
-            {shareWithFamilyGroup && <div className="text-xs">Делимся с семейной группой</div>}
+            Покупка курса {course.name}.{" "}
+            {shareWithFamilyGroup && <span className="text-xs">Делимся с семейной группой</span>}
           </p>
           <p>
             <input
@@ -52,7 +63,10 @@ const Payment: React.FC = () => {
               onChange={e => setInvoice({ ...invoice, card: e.target.value })}
               placeholder="Номер карты"
             />
-            <button className="bg-orange-600 border-4 border-orange-600 hover:bg-orange-400 hover:border-orange-400 rounded-lg px-5 py-2 text-white duration-75 mt-5">
+            <button 
+              className="bg-orange-600 border-4 border-orange-600 hover:bg-orange-400 hover:border-orange-400 rounded-lg px-5 py-2 text-white duration-75 mt-5"
+              onClick={onClickBuy}
+            >
               Оплатить
             </button>
           </p>
@@ -63,4 +77,3 @@ const Payment: React.FC = () => {
 };
 
 export default Payment;
-//! rework

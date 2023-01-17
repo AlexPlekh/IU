@@ -1,6 +1,6 @@
 "use strict";
 import { Request, Response } from "express";
-import { ICourseClientData, IUserRegData } from "types/Interfaces";
+import { IUserRegData } from "types/Interfaces";
 import { coursesStore } from "../Data/coursesStore";
 import { usersStore } from "../Data/usersStore";
 
@@ -19,6 +19,7 @@ export const API_URLS = {
   getCourses: "/API/getCourses",
   getCourseById: "/API/getCourses/:id",
   enableTrialCourse: "/API/enableTrialCourse/:id",
+  purchaseCourse: "/API/purchaseCourse",
 };
 
 /**
@@ -182,9 +183,27 @@ const api = {
     const courseId: string = req.params.id;
     if (!courseId) return res.status(400).send("Bad request");
 
-    usersStore.addCourseTrialPartToUser(userId, courseId)
+    usersStore.addCourseTrialPartToUser(userId, courseId);
 
     res.status(200).send({ data: {}, message: 'Succesfull', status: 1 });
+  },
+
+  // Покупка курса
+  async purchaseCourse(req: Request, res: Response) {
+    const userId: string = req.cookies.id;
+    if (!userId) return res.send({ message: "User not logged in", loginStatus: 3 });
+
+    const payload: {courseId: string, shareWithFamily: boolean} = req.body;
+    const courseId: string = payload.courseId;
+    if (!courseId) return res.status(400).send("Bad request");
+
+    usersStore.addCourseToUser(userId, courseId);
+
+    const shareWithFamily = payload.shareWithFamily
+    if (shareWithFamily) {
+      usersStore.addCourseToFamilyGroup(userId, courseId)
+    }
+    res.status(200).send({message: 'Курс оплачен и добавлен пользователю', status: 1});
   },
 };
 
