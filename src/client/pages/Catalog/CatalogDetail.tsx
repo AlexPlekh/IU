@@ -58,7 +58,7 @@ const CatalogDetail: React.FC = () => {
               )}
               {isAdultUser && (
                 <button
-                  className="bg-orange-600 border-4 border-orange-600 hover:bg-orange-400 hover:border-orange-400 rounded-lg px-5 py-2 text-white duration-75"
+                  className="bg-orange-600 border-2 border-orange-600 hover:bg-orange-400 hover:border-orange-400 rounded-lg px-5 py-2 text-white duration-75"
                   onClick={() => navigate('/payment', {
                     state: course
                   })}
