@@ -18,6 +18,7 @@ import { PrivateOutlet } from "./components/PrivateOutlet";
 import ActivatePromocode from "./pages/ActivatePromocode/ActivatePromocode";
 import Payment from "./pages/Payment/Payment";
 import LoaderOutlet from "./components/LoaderOutlet";
+import AfterPay from "./pages/Payment/AfterPay";
 
 export const App = () => {
   // let location = useLocation();
@@ -52,6 +53,7 @@ export const App = () => {
             <Route path="/catalog" element={<Catalog />}></Route>
             <Route path="/catalog/:id" element={<CatalogDetail />} />
             <Route path="/payment" element={<Payment />} />
+            <Route path="/page-after-pay" element={<AfterPay />} />
             <Route path="/activate-promocode" element={<ActivatePromocode />} />
           </Route>
         </Route>
