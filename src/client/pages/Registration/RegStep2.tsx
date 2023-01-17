@@ -9,6 +9,7 @@ import { API_URLS } from "../../../server/routes/api";
 import { useUserData } from "../../hooks/useUserData";
 import { setInputColour } from "../../components/functions/setInputColour";
 import { IRegData } from "./Registration";
+import useTelephoneInput from "../../hooks/useTelephoneInput";
 
 export interface IRegStep2 {
   backStep: () => void;
@@ -20,7 +21,7 @@ export const RegStep2: React.FC<IRegStep2> = ({ backStep, regData }) => {
   const [dataValid, setDataValid] = useState<boolean>(false);
   const [isTelConfirmed, setTelConfirmed] = useState<boolean>(false);
   const [isEmailConfirmed, setEmailConfirmed] = useState<boolean>(false);
-  const telNumber = useInput(["isEmpty", "validTelephone"]);
+  const telNumber = useTelephoneInput(["isEmpty", "validTelephone"]);
   const email = useInput(["isEmpty", "validEmail"]);
   const password = useInput(["isEmpty", "validPassword"]);
   const confirmPassword = useInput(["isEmpty", "validPassword"]);

@@ -9,6 +9,7 @@ interface TelNumberInputProps {
   isTelConfirmed: boolean;
   setTelConfirmed: React.Dispatch<React.SetStateAction<boolean>>;
   setTelAlreadyExist: React.Dispatch<React.SetStateAction<boolean>>;
+  ref: React.LegacyRef<HTMLInputElement>;
 }
 
 export const TelNumberInput: React.FC<TelNumberInputProps> = ({
@@ -16,6 +17,7 @@ export const TelNumberInput: React.FC<TelNumberInputProps> = ({
   isTelConfirmed,
   setTelConfirmed,
   setTelAlreadyExist,
+  ref
 }) => {
   const [isCodeSended, setIsCodeSended] = useState(false);
   const [isCodeWrong, setCodeWrong] = useState(false);
@@ -82,6 +84,7 @@ export const TelNumberInput: React.FC<TelNumberInputProps> = ({
           type="tel"
           placeholder="+7 999 999 9999"
           hidden={isCodeSended}
+          ref={ref}
         />
         <button
           type="button"
