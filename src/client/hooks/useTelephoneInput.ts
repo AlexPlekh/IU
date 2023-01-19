@@ -5,7 +5,7 @@ function useTelephoneInput(validations: validations, initialValue?: string) {
   const [inputValue, setInputValue] = useState<string>(initialValue || "");
   const [telNumber, setTelNumber] = useState<string>("");
   const [isDirty, setDirty] = useState(false);
-  const valid = useValidation(inputValue, validations);
+  const valid = useValidation(telNumber, validations);
   // const ref = useRef(null);
 
   function onBlur(e: React.FocusEvent) {
@@ -18,6 +18,7 @@ function useTelephoneInput(validations: validations, initialValue?: string) {
       if (maskedTel === "+") return maskedTel;
       let unmaskedTel = maskedTel.replace(/\D/g, "");
       if (unmaskedTel) unmaskedTel = "+" + unmaskedTel;
+      unmaskedTel = unmaskedTel.slice(0, 12);
       return unmaskedTel;
     }
 
@@ -28,7 +29,7 @@ function useTelephoneInput(validations: validations, initialValue?: string) {
       if (maskedTel.length > 2) maskedTel = maskedTel.slice(0, 2) + "(" + maskedTel.slice(2);
       if (maskedTel.length > 6) maskedTel = maskedTel.slice(0, 6) + ")" + maskedTel.slice(6);
       if (maskedTel.length > 10) maskedTel = maskedTel.slice(0, 10) + "-" + maskedTel.slice(10);
-      if (maskedTel.length > 13) maskedTel = maskedTel.slice(0, 13) + "-" + maskedTel.slice(13, 15);
+      if (maskedTel.length > 13) maskedTel = maskedTel.slice(0, 13) + "-" + maskedTel.slice(13);
 
       return maskedTel;
     }
