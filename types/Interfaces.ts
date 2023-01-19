@@ -55,3 +55,9 @@ export interface ICourseClientData {
   isTrialOpen: boolean;
 }
 
+export interface PromocodeData {
+  id: string;
+  promocode: string;
+  relativeCourse: string;
+  isActivated: boolean;
+}
