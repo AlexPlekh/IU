@@ -2,6 +2,7 @@
 import { Request, Response } from "express";
 import { IUserRegData } from "types/Interfaces";
 import { coursesStore } from "../Data/coursesStore";
+import { promocodeStore } from "../Data/promocodeStore";
 import { usersStore } from "../Data/usersStore";
 
 export const API_URLS = {
@@ -20,6 +21,7 @@ export const API_URLS = {
   getCourseById: "/API/getCourses/:id",
   enableTrialCourse: "/API/enableTrialCourse/:id",
   purchaseCourse: "/API/purchaseCourse",
+  activatePromocode: "/API/activatePromocode",
 };
 
 /**
@@ -204,6 +206,31 @@ const api = {
       usersStore.addCourseToFamilyGroup(userId, courseId)
     }
     res.status(200).send({message: 'Курс оплачен и добавлен пользователю', status: 1});
+  },
+
+  // Активация промокода
+  async activatePromocode(req: Request, res: Response) {
+    const userId: string = req.cookies.id;
+    if (!userId) return res.send({ message: "User not logged in", loginStatus: 3 });
+
+    const payload: {promocode: string, shareWithFamily: boolean} = req.body;
+    const promocode: string = payload.promocode
+    if (!promocode) return res.status(400).send("Bad request");
+
+    const courseId: string | undefined = promocodeStore.checkPromo(promocode)
+    if (!courseId) return res.send( {message: "Промокод некорректный или уже был активирован", status: 0});
+
+    const user = usersStore.findUserById(userId);
+    if (!user) throw Error("User not found");
+
+    usersStore.addCourseToUser(userId, courseId);
+    promocodeStore.activatePromo(promocode);
+
+    const shareWithFamily = payload.shareWithFamily
+    if (shareWithFamily) {
+      usersStore.addCourseToFamilyGroup(userId, courseId)
+    }
+    res.status(200).send({message: 'Курс активирован', status: 1});
   },
 };
 
