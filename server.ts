@@ -73,6 +73,7 @@ async function createServer(isProd = process.env.NODE_ENV === "production") {
   app.get(API_URLS.getCourses, api.getCourses)
   app.get(API_URLS.getCourseById, api.getCourseById)
   app.post(API_URLS.purchaseCourse, api.purchaseCourse)
+  app.post(API_URLS.activatePromocode, api.activatePromocode)
   app.get(API_URLS.enableTrialCourse, api.enableTrialCourse)
 
   app.use("*", async (req: Request, res: Response, next: NextFunction) => {

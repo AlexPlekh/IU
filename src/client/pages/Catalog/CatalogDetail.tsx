@@ -14,6 +14,15 @@ const CatalogDetail: React.FC = () => {
   const isAdultUser = isAdult(user.dateOfBirth);
   const navigate = useNavigate();
 
+  const onFreePartBtnClick = async () => {
+    if (course) {
+      const res = await enableFreePart(course.id)
+      if (res.status === 1) {
+        setCourse( {...course, isTrialOpen: true})
+      } 
+    }
+  };
+
   useEffect(() => {
     const getCourse = async (id: string) => {
       const response = await fetchGetCourseById(id);
@@ -26,13 +35,7 @@ const CatalogDetail: React.FC = () => {
     if (id) {
       getCourse(id);
     }
-  }, [id, course]);
-
-  const onFreePartBtnClick = () => {
-    if (course) {
-      enableFreePart(course.id)
-    }
-  };
+  }, [id]);
 
   return (
     <div className="container mx-auto mt-12">
