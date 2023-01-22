@@ -58,7 +58,8 @@ export const usersStore = {
     }
   },
 
-  findUser(username: string) {
+  findUser(username: string | null) {
+    if (!username) return null;
     let user = usersStore.data.find(item => item.email === username || item.tel === username);
     return user || null;
   },
