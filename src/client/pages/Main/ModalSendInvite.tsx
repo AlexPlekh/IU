@@ -43,7 +43,7 @@ export const ModalSendInvite: React.FC<PropsWithChildren<IModalPropsInvite>> = (
         >
           <span>
             {isAdult
-              ? "Пригласите пользователя в рабочую группу"
+              ? "Пригласите пользователя в семейную группу"
               : "Чтобы разблокировать доступ к контенту, необходимо согласие родителя."}
           </span>
           <label className="flex flex-col">
