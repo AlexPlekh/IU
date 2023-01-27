@@ -2,12 +2,15 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { fetchLogin } from "../../components/fetches/fetches";
 import { useUserData } from "../../hooks/useUserData";
+import eye from "../../img/eye.svg";
+import eyeSlash from "../../img/eye-slash.svg";
 
 export const Auth: React.FC = () => {
   const [userName, setUserName] = useState(""); // userName здесь - это телефон или почта
   const [password, setPassword] = useState("");
   const userData = useUserData();
   const [wrongLogin, setWrongLogin] = useState(false);
+  const [isPasVisible, setPasVisible] = useState(false);
 
   function Login() {
     fetchLogin(userName, password)
@@ -18,6 +21,10 @@ export const Auth: React.FC = () => {
         setWrongLogin(true);
       });
   }
+
+  const togglePasVisible = () => {
+    setPasVisible(!isPasVisible);
+  };
 
   return (
     <main>
@@ -35,15 +42,20 @@ export const Auth: React.FC = () => {
               id="userName"
             />
           </label>
-          <label className="flex flex-col mt-1">
+          <label className="relative flex flex-col mt-1">
             Пароль
             <input
               className="border-solid border-gray-400 border rounded px-1"
-              type="password"
               onChange={e => setPassword(e.target.value)}
               value={password}
               name="password"
               id="password"
+              type={isPasVisible ? "text" : "password"}
+            />
+            <img
+              src={isPasVisible ? eyeSlash : eye}
+              onClick={togglePasVisible}
+              className="absolute top-[29px] right-2"
             />
           </label>
           <span className="bg-red-200 mt-1 px-2 py-1 rounded text-red-800 border border-red-800" hidden={!wrongLogin}>

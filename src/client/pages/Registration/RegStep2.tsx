@@ -78,36 +78,6 @@ export const RegStep2: React.FC<IRegStep2> = ({ backStep, regData }) => {
     sendNewUser();
   };
 
-  // const unMaskTel = (maskedTel: string) => maskedTel.replace(/\+7|\D/g, "");
-
-  // const maskTel = (tel: string) => {
-  //   let maskedTel = "+7";
-  //   if (tel.length > 0) maskedTel += ` ${tel.substring(0, 3)}`;
-  //   if (tel.length > 3) maskedTel += ` ${tel.substring(3, 6)}`;
-  //   if (tel.length > 6) maskedTel += ` ${tel.substring(6, 10)}`;
-  //   return maskedTel;
-  // };
-
-  // const telInputChange = (e: ChangeEvent<HTMLInputElement>) => {
-  //   let val = e.target.value;
-  //   if (val !== "+" && val !== "+7") {
-  //     val = unMaskTel(val).slice(0, 10);
-  //     setName(maskTel(val));
-  //   } else setName(val);
-  // };
-
-  // const telInputBackspace = (e: React.KeyboardEvent<HTMLInputElement>) => {
-  //   if (e.key === "Backspace") {
-  //     e.preventDefault();
-  //     let val = name;
-  //     if (val !== "+" && val !== "+7") {
-  //       val = unMaskTel(val);
-  //       val = val.slice(0, val.length - 1);
-  //       setName(maskTel(val));
-  //     } else setName(val);
-  //   }
-  // };
-
   return (
     <main className="">
       <div className="flex flex-col items-center">
