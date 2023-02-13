@@ -23,13 +23,13 @@ export const TelNumberInput: React.FC<TelNumberInputProps> = ({
   const [isCodeWrong, setCodeWrong] = useState(false);
   const [codeInputValue, setCodeInputValue] = useState("");
 
-  const requestTelCode = async (telNumber: string) => {
+  const requestTelCode = async (tel: string) => {
     let response = await fetch(API_URLS.requestTelCode, {
       method: "POST",
       headers: {
         "Content-Type": "application/json;charset=utf-8",
       },
-      body: JSON.stringify({ telNumber }),
+      body: JSON.stringify({ telNumber : tel.replace(/\(*\)*-*/g, "") }),
     });
     let resText = await response.text();
     console.log(resText);
@@ -38,7 +38,7 @@ export const TelNumberInput: React.FC<TelNumberInputProps> = ({
 
   const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    if (!isCodeSended) requestTelCode(telNumber.value);
+    if (!isCodeSended) requestTelCode(telNumber.value.replace(/\(*\)*-*/g, ""));
     else {
       setIsCodeSended(false);
       setCodeInputValue("");

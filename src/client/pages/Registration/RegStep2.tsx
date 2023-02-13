@@ -52,7 +52,7 @@ export const RegStep2: React.FC<IRegStep2> = ({ backStep, regData }) => {
       body: JSON.stringify({
         name: regData.username,
         surname: regData.surname,
-        tel: isTelConfirmed ? telNumber.value : null,
+        tel: isTelConfirmed ? telNumber.value.replace(/\(*\)*-*/g, "") : null,
         email: isEmailConfirmed ? email.value.toLowerCase() : null,
         dateOfBirth: regData.dateOfBirth,
         password: password.value,
